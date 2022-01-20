@@ -67,7 +67,8 @@ void ABlocksPlayer::MoveForward(float Value)
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		const FRotator YawRotation(0, 0, 0);
-
+		FVector Location = GetActorLocation();
+		SetActorLocation(FVector(Location.X, 0, Location.Z));
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
@@ -79,7 +80,8 @@ void ABlocksPlayer::MoveBackward(float Value)
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		const FRotator YawRotation(0, 180, 0);
-
+		FVector Location = GetActorLocation();
+		SetActorLocation(FVector(Location.X, 0, Location.Z));
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
