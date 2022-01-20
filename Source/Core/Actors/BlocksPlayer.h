@@ -79,6 +79,8 @@ public:
 	 */
 	void LookUpAtRate(float Rate);
 
+	void BeginPlay() override;
+
 //======================================================================================
 // C++ Protected
 protected:
@@ -96,8 +98,8 @@ protected:
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
-	/** Called for side to side input */
-	void MoveRight(float Value);
+	/** Called for forwards/backward input */
+	void MoveBackward(float Value);
 
 	// Internal Events and Implementations 
 

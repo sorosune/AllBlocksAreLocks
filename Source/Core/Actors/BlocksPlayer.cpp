@@ -52,7 +52,7 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABlocksPlayer::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ABlocksPlayer::MoveRight);
+	PlayerInputComponent->BindAxis("MoveBackward", this, &ABlocksPlayer::MoveBackward);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -75,13 +75,18 @@ void ABlocksPlayer::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+void ABlocksPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetActorRotation(FRotator(0, 0, 0));
+}
+
 void ABlocksPlayer::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator YawRotation(0, 0, 0);
 
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -89,17 +94,14 @@ void ABlocksPlayer::MoveForward(float Value)
 	}
 }
 
-void ABlocksPlayer::MoveRight(float Value)
+void ABlocksPlayer::MoveBackward(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
-		// find out which way is right
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
-		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		// add movement in that direction
+		const FRotator YawRotation(0, 180, 0);
+
+		// get forward vector
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
 	}
 }
