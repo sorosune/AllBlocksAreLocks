@@ -20,7 +20,7 @@ public:
 	// Blueprint Variables
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMesh* Mesh;
+	UStaticMeshComponent* Mesh;
 
 	// Getters
 
