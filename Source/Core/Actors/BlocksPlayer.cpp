@@ -59,6 +59,8 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("AimDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<1>);
 	PlayerInputComponent->BindAction("AimDiagonalUp", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<2>);
 	PlayerInputComponent->BindAction("AimDiagonalDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<3>);
+	PlayerInputComponent->BindAction("AimLeft", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<4>);
+	PlayerInputComponent->BindAction("AimRight", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<5>);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABlocksPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveBackward", this, &ABlocksPlayer::MoveBackward);
@@ -81,7 +83,6 @@ void ABlocksPlayer::MoveForward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
-		ChangeAimDirection<5>();
 	}
 }
 
@@ -95,7 +96,6 @@ void ABlocksPlayer::MoveBackward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
-		ChangeAimDirection<4>();
 	}
 }
 
