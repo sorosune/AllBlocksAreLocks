@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Bullet.h"
+#include "Core/HelperFiles/DefinedDebugHelpers.h"
 #include "BaseBlock.generated.h"
 
 UCLASS()
@@ -52,6 +54,8 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void OnBulletHit(ABullet* Bullet) { SCREENMSG("HIT"); Bullet->Destroy(); };
 
 //======================================================================================
 // C++ Protected

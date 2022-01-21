@@ -2,6 +2,7 @@
 
 
 #include "Bullet.h"
+#include "BaseBlock.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
@@ -16,7 +17,8 @@ ABullet::ABullet()
 	{
 		Mesh->SetStaticMesh(MeshFinder.Object);
 		Mesh->SetWorldScale3D(FVector(0.25, 0.25, 0.25));
-		Mesh->SetCollisionProfileName("NoCollision");
+		Mesh->SetCollisionProfileName("Bullet");
+		Mesh->SetGenerateOverlapEvents(true);
 	}
 }
 
@@ -24,7 +26,7 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
 }
 
 // Called every frame
@@ -33,5 +35,12 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector LocalDirection = FVector(Direction.X, 0, Direction.Y);
 	AddActorLocalOffset(Speed * LocalDirection * DeltaTime);
+}
+
+void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABaseBlock* BaseBlock = Cast<ABaseBlock>(OtherActor);
+	if (BaseBlock)
+		BaseBlock->OnBulletHit(this);
 }
 
