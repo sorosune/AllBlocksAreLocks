@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Core/GameplayObjects/Bullet.h"
+#include "Core/HelperFiles/DefinedDebugHelpers.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AAllBlocksAreLocksCharacter
@@ -51,6 +53,13 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	// Bullet Actions
+	PlayerInputComponent->BindAction("FireBullet", IE_Pressed, this, &ABlocksPlayer::FireBullet);
+	PlayerInputComponent->BindAction("AimUp", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<0>);
+	PlayerInputComponent->BindAction("AimDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<1>);
+	PlayerInputComponent->BindAction("AimDiagonalUp", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<2>);
+	PlayerInputComponent->BindAction("AimDiagonalDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<3>);
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABlocksPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveBackward", this, &ABlocksPlayer::MoveBackward);
 }
@@ -72,6 +81,7 @@ void ABlocksPlayer::MoveForward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+		ChangeAimDirection<5>();
 	}
 }
 
@@ -85,5 +95,49 @@ void ABlocksPlayer::MoveBackward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+		ChangeAimDirection<4>();
+	}
+}
+
+void ABlocksPlayer::FireBullet()
+{
+	FVector AimDirection3D = FVector(AimDirection.X, 0, AimDirection.Y);
+	FVector Location = GetActorLocation() + (100 * AimDirection3D);
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		ABullet* Bullet = World->SpawnActor<ABullet>(Location, FRotator(0, 0, 0));
+		Bullet->Direction = AimDirection;
+	}
+}
+
+template<int T>
+void ABlocksPlayer::ChangeAimDirection()
+{
+	FVector NewDirection;
+	switch (T)
+	{
+	case 0: // Up
+		AimDirection = FVector2D(0, 1);
+		break;
+	case 1: // Down
+		AimDirection = FVector2D(0, -1);
+		break;
+	case 2: // Diagonal Up
+		NewDirection = FVector(0, 0, 1) + GetActorForwardVector();
+		AimDirection = FVector2D(NewDirection.X, NewDirection.Z);
+		AimDirection.Normalize();
+		break;
+	case 3: // Diagonal Down
+		NewDirection = FVector(0, 0, -1) + GetActorForwardVector();
+		AimDirection = FVector2D(NewDirection.X, NewDirection.Z);
+		AimDirection.Normalize();
+		break;
+	case 4: // Left
+		AimDirection = FVector2D(-1, 0);
+		break;
+	case 5: // Right
+		AimDirection = FVector2D(1, 0);
+		break;
 	}
 }
