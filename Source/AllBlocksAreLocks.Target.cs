@@ -10,5 +10,9 @@ public class AllBlocksAreLocksTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.Add("AllBlocksAreLocks");
+		
+		// Allocate more memory to prevent build error:
+		// Failed to create virtual memory for PCH
+		WindowsPlatform.PCHMemoryAllocationFactor = 2000;
 	}
 }
