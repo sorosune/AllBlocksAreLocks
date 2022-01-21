@@ -11,6 +11,7 @@ ABaseBlock::ABaseBlock()
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = Mesh;
+	Mesh->CastShadow = 0;
 }
 
 // Called when the game starts or when spawned
@@ -26,12 +27,6 @@ void ABaseBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void ABaseBlock::UpdateFlipFlopTime(float DeltaTime)
-{
-	if (FlipFlopTime)
-		FlipFlopTime -= DeltaTime;
 }
 
 void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

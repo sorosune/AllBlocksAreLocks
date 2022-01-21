@@ -94,6 +94,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	int WorldNum;
 
+	FTimerHandle TimerHandle;
+
 	// Internal Virtual Functions
 
 	// Internal Overrides
@@ -101,8 +103,6 @@ protected:
 	// Internal Regular Functions
 
 	// Internal Events and Implementations 
-
-	void UpdateFlipFlopTime(float DeltaTime);
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
