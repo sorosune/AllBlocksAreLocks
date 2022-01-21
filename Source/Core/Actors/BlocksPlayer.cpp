@@ -107,7 +107,8 @@ void ABlocksPlayer::FireBullet()
 	if (World)
 	{
 		ABullet* Bullet = World->SpawnActor<ABullet>(Location, FRotator(0, 0, 0));
-		Bullet->Direction = AimDirection;
+		if(Bullet)
+			Bullet->Direction = AimDirection;
 	}
 }
 

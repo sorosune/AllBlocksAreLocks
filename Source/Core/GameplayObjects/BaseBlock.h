@@ -81,11 +81,18 @@ public:
 
 	virtual void OnPlayerOverlap(ABlocksPlayer* Player) { ; };
 
+	virtual void PreYeet();
+
+	virtual void PostYeet();
+
 //======================================================================================
 // C++ Protected
 protected:
 
 	// Internal Variables
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	int WorldNum;
 
 	// Internal Virtual Functions
 
@@ -97,6 +104,7 @@ protected:
 
 	void UpdateFlipFlopTime(float DeltaTime);
 
+	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 //======================================================================================

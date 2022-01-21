@@ -18,6 +18,7 @@ void ABaseBlock::BeginPlay()
 {
 	Super::BeginPlay();
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ABaseBlock::OnOverlapBegin);
+	WorldNum = GetActorLocation().Z < 0;
 }
 
 // Called every frame
@@ -43,3 +44,36 @@ void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
+void ABaseBlock::PreYeet()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FHitResult Hit;
+		FVector Position = FVector(GetActorLocation().X, GetActorLocation().Y, -GetActorLocation().Z);
+		FVector Forward;
+		if (World->SweepSingleByChannel(Hit,
+			Position,
+			Position,
+			GetActorRotation().Quaternion(),
+			ECollisionChannel::ECC_Camera,
+			FCollisionShape::MakeBox(FVector(50, 40, 50))))
+		{
+			ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
+			if (OtherBlock)
+			{
+				OtherBlock->PostYeet();
+			}
+			else if (Hit.GetActor())
+				return;
+		}
+	}
+	PostYeet();
+}
+
+void ABaseBlock::PostYeet()
+{
+	WorldNum = !WorldNum;
+	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z));
+	dOnYeeted.Broadcast(WorldNum);
+}
