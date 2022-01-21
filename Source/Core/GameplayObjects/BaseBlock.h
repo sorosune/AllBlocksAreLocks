@@ -8,6 +8,10 @@
 #include "Core/HelperFiles/DefinedDebugHelpers.h"
 #include "BaseBlock.generated.h"
 
+class ABlocksPlayer;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnYeeted, int, WorldNum);
+
 UCLASS()
 class ALLBLOCKSARELOCKS_API ABaseBlock : public AActor
 {
@@ -24,6 +28,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FlipFlopTime = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bFlipFlopRepeat = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BounceMagnitude = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ABaseBlock* PairedBlock = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPlayerTouching = false;
+
 	// Getters
 
 	// Setters
@@ -37,6 +56,9 @@ public:
 	// External Regular Functions
 
 	// External Events
+
+	UPROPERTY(BlueprintAssignable)
+	FOnYeeted dOnYeeted;
 
 //======================================================================================
 // C++ Public
@@ -55,7 +77,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void OnBulletHit(ABullet* Bullet) { SCREENMSG("HIT"); Bullet->Destroy(); };
+	virtual void OnBulletHit(ABullet* Bullet) { ; };
+
+	virtual void OnPlayerOverlap(ABlocksPlayer* Player) { ; };
 
 //======================================================================================
 // C++ Protected
@@ -70,6 +94,10 @@ protected:
 	// Internal Regular Functions
 
 	// Internal Events and Implementations 
+
+	void UpdateFlipFlopTime(float DeltaTime);
+
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 //======================================================================================
 // C++ Private

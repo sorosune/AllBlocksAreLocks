@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "BlocksPlayer.generated.h"
 
+class ABaseBlock;
+
 UCLASS(Blueprintable, BlueprintType)
 class ALLBLOCKSARELOCKS_API ABlocksPlayer: public ACharacter
 {
@@ -80,6 +82,8 @@ public:
 	void LookUpAtRate(float Rate);
 
 	void BeginPlay() override;
+
+	void OnBlockTouch(ABaseBlock* Block) { ; };
 
 //======================================================================================
 // C++ Protected

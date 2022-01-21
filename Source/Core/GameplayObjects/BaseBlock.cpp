@@ -2,6 +2,7 @@
 
 
 #include "BaseBlock.h"
+#include "Core/Actors/BlocksPlayer.h"
 
 // Sets default values
 ABaseBlock::ABaseBlock()
@@ -16,7 +17,7 @@ ABaseBlock::ABaseBlock()
 void ABaseBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ABaseBlock::OnOverlapBegin);
 }
 
 // Called every frame
@@ -24,5 +25,21 @@ void ABaseBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABaseBlock::UpdateFlipFlopTime(float DeltaTime)
+{
+	if (FlipFlopTime)
+		FlipFlopTime -= DeltaTime;
+}
+
+void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
+	if (Player)
+	{
+		OnPlayerOverlap(Player);
+		Player->OnBlockTouch(this);
+	}
 }
 
