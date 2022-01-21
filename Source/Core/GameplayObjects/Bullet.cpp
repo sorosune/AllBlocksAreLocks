@@ -39,8 +39,10 @@ void ABullet::Tick(float DeltaTime)
 
 void ABullet::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	Mesh->SetCollisionProfileName("NoCollision");
 	ABaseBlock* BaseBlock = Cast<ABaseBlock>(OtherActor);
 	if (BaseBlock)
 		BaseBlock->OnBulletHit(this);
+	Destroy();
 }
 

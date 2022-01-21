@@ -11,5 +11,4 @@ AYeetBlock::AYeetBlock()
 void AYeetBlock::OnBulletHit(ABullet* Bullet)
 {
 	PreYeet();
-	Bullet->Destroy();
 }

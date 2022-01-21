@@ -45,7 +45,7 @@ void ABaseBlock::PreYeet()
 			Position,
 			GetActorRotation().Quaternion(),
 			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(50, 40, 50))))
+			FCollisionShape::MakeBox(FVector(50, 40, 45))))
 		{
 			ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
 			if (OtherBlock)

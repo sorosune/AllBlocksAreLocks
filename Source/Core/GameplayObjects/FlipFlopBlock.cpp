@@ -24,6 +24,5 @@ void AFlipFlopBlock::OnBulletHit(ABullet* Bullet)
 			PreYeet();
 			World->GetTimerManager().ClearTimer(TimerHandle);
 		}
-		Bullet->Destroy();
 	}
 }

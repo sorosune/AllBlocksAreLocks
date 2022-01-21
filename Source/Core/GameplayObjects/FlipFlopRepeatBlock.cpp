@@ -19,8 +19,3 @@ void AFlipFlopRepeatBlock::BeginPlay()
 		World->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, FlipFlopTime, bFlipFlopRepeat);
 	}
 }
-
-void AFlipFlopRepeatBlock::OnBulletHit(ABullet* Bullet)
-{
-	Bullet->Destroy();
-}

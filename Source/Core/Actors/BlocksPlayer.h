@@ -46,6 +46,12 @@ public:
 
 	// External Regular Functions
 
+	UFUNCTION(BlueprintCallable)
+	void EnableWorldSwap();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableWorldSwap();
+
 	// External Events
 
 //======================================================================================
@@ -56,30 +62,20 @@ public:
 
 	// Initialized Variables
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	float BaseTurnRate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int WorldNum = 0;
 
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
-	float BaseLookUpRate;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int NumWorldSwaps = 0;
+
+	// 0 means we can manually swap
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int ManualSwapLocks = 0;
 
 	// Constructor
 	ABlocksPlayer();
 
 	// Initializers, and Actor Lifecycle Functions
-
-	/**
-	 * Called via input to turn at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void TurnAtRate(float Rate);
-
-	/**
-	 * Called via input to turn look up/down at a given rate.
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void LookUpAtRate(float Rate);
 
 	void BeginPlay() override;
 
@@ -109,6 +105,8 @@ protected:
 
 	template<int T>
 	void ChangeAimDirection();
+
+	void ManualWorldSwap();
 
 	// Internal Events and Implementations 
 

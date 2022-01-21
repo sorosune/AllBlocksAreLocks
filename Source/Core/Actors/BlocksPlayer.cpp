@@ -11,17 +11,10 @@
 #include "Core/GameplayObjects/Bullet.h"
 #include "Core/HelperFiles/DefinedDebugHelpers.h"
 
-//////////////////////////////////////////////////////////////////////////
-// AAllBlocksAreLocksCharacter
-
 ABlocksPlayer::ABlocksPlayer()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
-	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -141,4 +134,21 @@ void ABlocksPlayer::ChangeAimDirection()
 		AimDirection = FVector2D(1, 0);
 		break;
 	}
+}
+
+void ABlocksPlayer::ManualWorldSwap()
+{
+	if (!ManualSwapLocks)
+		int x = 1; // swap worlds
+}
+
+void ABlocksPlayer::EnableWorldSwap()
+{
+	if (ManualSwapLocks)
+		ManualSwapLocks--;
+}
+
+void ABlocksPlayer::DisableWorldSwap()
+{
+	ManualSwapLocks++;
 }

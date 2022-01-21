@@ -37,6 +37,9 @@ public:
 
 	// External Regular Functions
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE ABullet* Copy() { return DuplicateObject(this, this->GetOuter()); };
+
 	// External Events
 
 //======================================================================================
