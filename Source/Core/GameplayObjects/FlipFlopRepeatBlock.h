@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "BaseBlock.h"
-#include "FlipFlopBlock.generated.h"
+#include "FlipFlopRepeatBlock.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ALLBLOCKSARELOCKS_API AFlipFlopBlock : public ABaseBlock
+class ALLBLOCKSARELOCKS_API AFlipFlopRepeatBlock : public ABaseBlock
 {
 	GENERATED_BODY()
 
@@ -45,9 +45,11 @@ public:
 	// Initialized Variables
 
 	// Constructor
-	AFlipFlopBlock();
+	AFlipFlopRepeatBlock();
 
 	// Initializers, and Actor Lifecycle Functions
+
+	virtual void BeginPlay() override;
 
 	virtual void OnBulletHit(ABullet* Bullet) override;
 

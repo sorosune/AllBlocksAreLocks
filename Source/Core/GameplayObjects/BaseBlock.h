@@ -75,8 +75,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void OnBulletHit(ABullet* Bullet) { ; };
 
 	virtual void OnPlayerOverlap(ABlocksPlayer* Player) { ; };

@@ -5,12 +5,7 @@
 
 AFlipFlopBlock::AFlipFlopBlock()
 {
-
-}
-
-void AFlipFlopBlock::BeginPlay()
-{
-	Super::BeginPlay();
+	FlipFlopTime = 1;
 }
 
 void AFlipFlopBlock::OnBulletHit(ABullet* Bullet)
