@@ -101,6 +101,11 @@ protected:
 	/** Called for forwards/backward input */
 	void MoveBackward(float Value);
 
+	void FireBullet();
+
+	template<int T>
+	void ChangeAimDirection();
+
 	// Internal Events and Implementations 
 
 //======================================================================================
@@ -109,8 +114,9 @@ private:
 
 	// Internal Variables
 
+	FVector2D AimDirection = FVector2D(1, 0);
+
 	// Overrides
 
 	// Regular Functions
 };
-
