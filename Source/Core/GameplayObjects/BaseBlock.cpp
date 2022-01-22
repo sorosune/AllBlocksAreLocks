@@ -74,25 +74,6 @@ bool ABaseBlock::PreYeet()
 	return false;
 }
 
-void ABaseBlock::PostYeet()
-{
-	WorldNum = !WorldNum;
-	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z));
-	for (int i = 0; i < LinkedBlocks.Num(); i++)
-	{
-		if (LinkedBlocks[i] == Mesh)
-			continue;
-		float Distance;
-		if(GetActorLocation().Z > 0)
-			Distance = -(LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
-		else
-			Distance = (LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
-		LinkedBlocks[i]->AddLocalOffset(FVector(0, 0, Distance * 2 * FMath::Sign(GetActorLocation().Z)));
-	}
-	dOnYeeted.Broadcast(WorldNum);
-	BlocksToIgnore.Empty();
-}
-
 bool ABaseBlock::LinkedPreYeet()
 {
 	UWorld* World = GetWorld();
@@ -137,6 +118,25 @@ bool ABaseBlock::LinkedPreYeet()
 		return true;
 	}
 	return false;
+}
+
+void ABaseBlock::PostYeet()
+{
+	WorldNum = !WorldNum;
+	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z));
+	for (int i = 0; i < LinkedBlocks.Num(); i++)
+	{
+		if (LinkedBlocks[i] == Mesh)
+			continue;
+		float Distance;
+		if (GetActorLocation().Z > 0)
+			Distance = -(LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
+		else
+			Distance = (LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
+		LinkedBlocks[i]->AddLocalOffset(FVector(0, 0, Distance * 2 * FMath::Sign(GetActorLocation().Z)));
+	}
+	dOnYeeted.Broadcast(WorldNum);
+	BlocksToIgnore.Empty();
 }
 
 void ABaseBlock::MoveBlock(FVector Direction, ABullet* Bullet)
