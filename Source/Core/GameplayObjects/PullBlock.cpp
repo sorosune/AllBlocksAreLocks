@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PushBlock.h"
+#include "PullBlock.h"
 
-APushBlock::APushBlock()
+APullBlock::APullBlock()
 {
 
 }
 
-void APushBlock::OnBulletHit(ABullet* Bullet)
+void APullBlock::OnBulletHit(ABullet* Bullet)
 {
 	FVector HitLocation = Bullet->GetActorLocation();
-	FVector Direction = -(HitLocation - GetActorLocation());
+	FVector Direction = HitLocation - GetActorLocation();
 	Direction.Normalize();
 	Direction.Y = 0;
 	MoveBlock(Direction, Bullet);

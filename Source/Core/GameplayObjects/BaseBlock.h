@@ -83,6 +83,8 @@ public:
 
 	virtual void PostYeet();
 
+	virtual void MoveBlock(FVector Direction, ABullet* Bullet = nullptr);
+
 //======================================================================================
 // C++ Protected
 protected:
