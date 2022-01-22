@@ -9,6 +9,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Core/GameplayObjects/Bullet.h"
+#include "Core/GameplayObjects/BounceBlock.h"
 #include "Core/HelperFiles/DefinedDebugHelpers.h"
 
 ABlocksPlayer::ABlocksPlayer()
@@ -151,4 +152,32 @@ void ABlocksPlayer::EnableWorldSwap()
 void ABlocksPlayer::DisableWorldSwap()
 {
 	ManualSwapLocks++;
+}
+
+void ABlocksPlayer::OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMesh)
+{
+	if (Cast<ABounceBlock>(Block) && BlockMesh)
+	{
+		FVector Velocity = GetCharacterMovement()->GetLastUpdateVelocity();
+		float DeltaX = 0;
+		float DeltaZ = 0;
+		FVector Direction = GetActorLocation() - BlockMesh->GetComponentLocation();
+		Direction.Normalize();
+		if (FMath::Abs(Direction.X) > FMath::Abs(Direction.Z))
+		{
+			DeltaX = (FMath::Abs(Velocity.X) + Block->BounceMagnitude) * -FMath::Sign(Velocity.X);
+			GetCharacterMovement()->AddImpulse(FVector(DeltaX, Velocity.Y, Velocity.Z), true);
+		}
+		else if ((FMath::Abs(Direction.Z) - FMath::Abs(Direction.X)) < 0.5)
+		{
+			DeltaX = (FMath::Abs(Velocity.X) + Block->BounceMagnitude) * -FMath::Sign(Velocity.X);
+			DeltaZ = (FMath::Abs(Velocity.Z) + Block->BounceMagnitude) * -FMath::Sign(Velocity.Z);
+			GetCharacterMovement()->AddImpulse(FVector(DeltaX, Velocity.Y, DeltaZ), true);
+		}
+		else
+		{
+			DeltaZ = (FMath::Abs(Velocity.Z) + Block->BounceMagnitude) * -FMath::Sign(Velocity.Z);
+			GetCharacterMovement()->AddImpulse(FVector(Velocity.X, Velocity.Y, DeltaZ), true);
+		}
+	}
 }

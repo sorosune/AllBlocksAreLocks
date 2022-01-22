@@ -85,7 +85,7 @@ public:
 
 	virtual void OnBulletHit(ABullet* Bullet) { ; };
 
-	virtual void OnPlayerOverlap(ABlocksPlayer* Player) { ; };
+	virtual void OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent* OverlappedMesh) { ; };
 
 	UFUNCTION()
 	virtual bool PreYeet();
@@ -115,7 +115,7 @@ protected:
 	// Internal Events and Implementations 
 
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 //======================================================================================
 // C++ Private

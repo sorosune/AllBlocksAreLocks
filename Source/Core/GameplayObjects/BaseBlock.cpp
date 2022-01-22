@@ -18,17 +18,17 @@ ABaseBlock::ABaseBlock()
 void ABaseBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ABaseBlock::OnOverlapBegin);
+	Mesh->OnComponentHit.AddDynamic(this, &ABaseBlock::OnHit);
 	WorldNum = GetActorLocation().Z < 0;
 }
 
-void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
 	if (Player)
 	{
-		OnPlayerOverlap(Player);
-		Player->OnBlockTouch(this);
+		OnPlayerOverlap(Player, OtherComp);
+		Player->OnBlockTouch(this, HitComp);
 	}
 }
 

@@ -79,7 +79,7 @@ public:
 
 	void BeginPlay() override;
 
-	void OnBlockTouch(ABaseBlock* Block) { ; };
+	void OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMesh);
 
 //======================================================================================
 // C++ Protected
