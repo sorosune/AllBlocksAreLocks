@@ -34,6 +34,8 @@ void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 
 bool ABaseBlock::PreYeet()
 {
+	if (!bIsYeetable)
+		return false;
 	TSet<UStaticMeshComponent*> OurBlocks;
 	OurBlocks.Append(LinkedBlocks);
 	OurBlocks.Add(Mesh);
@@ -58,7 +60,7 @@ bool ABaseBlock::PreYeet()
 					if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 99.9 * 99.9)
 						continue;
 					ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
-					if (OtherBlock)
+					if (OtherBlock && OtherBlock->bIsYeetable)
 					{
 						if (!BlocksToIgnore.Contains(OtherBlock))
 							BlocksToYeet.Add(OtherBlock);

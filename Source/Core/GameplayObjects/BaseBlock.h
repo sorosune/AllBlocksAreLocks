@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsPlayerTouching = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsYeetable = true;
+
 	// Getters
 
 	// Setters
