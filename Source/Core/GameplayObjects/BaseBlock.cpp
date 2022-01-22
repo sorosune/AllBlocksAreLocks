@@ -32,38 +32,117 @@ void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
-void ABaseBlock::PreYeet()
+bool ABaseBlock::PreYeet()
 {
+	if (LinkedBlocks.Num())
+		return LinkedPreYeet();
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FHitResult Hit;
+		TArray<FHitResult> Hits;
 		FVector Position = FVector(GetActorLocation().X, GetActorLocation().Y, -GetActorLocation().Z);
 		FVector Forward;
-		if (World->SweepSingleByChannel(Hit,
+		if (World->SweepMultiByChannel(Hits,
 			Position,
 			Position,
 			GetActorRotation().Quaternion(),
 			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(45, 45, 45))))
+			FCollisionShape::MakeBox(FVector(50, 50, 50))))
 		{
-			ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
-			if (OtherBlock)
+			for (auto& Hit : Hits)
 			{
-				OtherBlock->PostYeet();
+				ABlocksPlayer* Player = Cast<ABlocksPlayer>(Hit.GetActor());
+				if (Player)
+					return false;
+				if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 50 * 50)
+					continue;
+				ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
+				if (OtherBlock)
+				{
+					if (!BlocksToIgnore.Contains(OtherBlock))
+					{
+						OtherBlock->BlocksToIgnore.Add(this);
+						OtherBlock->BlocksToIgnore = OtherBlock->BlocksToIgnore.Union(BlocksToIgnore);
+						if (!OtherBlock->PreYeet())
+							return false;
+					}
+				}
+				else
+					return false;
 			}
-			else if (Hit.GetActor())
-				return;
 		}
+		PostYeet();
+		return true;
 	}
-	PostYeet();
+	return false;
 }
 
 void ABaseBlock::PostYeet()
 {
 	WorldNum = !WorldNum;
 	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z));
+	for (int i = 0; i < LinkedBlocks.Num(); i++)
+	{
+		if (LinkedBlocks[i] == Mesh)
+			continue;
+		float Distance;
+		if(GetActorLocation().Z > 0)
+			Distance = -(LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
+		else
+			Distance = (LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
+		LinkedBlocks[i]->AddLocalOffset(FVector(0, 0, Distance * 2 * FMath::Sign(GetActorLocation().Z)));
+	}
 	dOnYeeted.Broadcast(WorldNum);
+	BlocksToIgnore.Empty();
+}
+
+bool ABaseBlock::LinkedPreYeet()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		TSet<ABaseBlock*> BlocksToYeet;
+		for (auto& Block : LinkedBlocks)
+		{
+			TArray<FHitResult> Hits;
+			FVector Position = FVector(Block->GetComponentLocation().X, Block->GetComponentLocation().Y, -Block->GetComponentLocation().Z);
+			FVector Forward;
+			if (World->SweepMultiByChannel(Hits,
+				Position,
+				Position,
+				GetActorRotation().Quaternion(),
+				ECollisionChannel::ECC_Camera,
+				FCollisionShape::MakeBox(FVector(50, 50, 50))))
+			{
+				for (auto& Hit : Hits)
+				{
+					ABlocksPlayer* Player = Cast<ABlocksPlayer>(Hit.GetActor());
+					if (Player)
+						return false;
+					if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 50 * 50)
+						continue;
+					ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
+					if (OtherBlock)
+					{
+						if (!BlocksToIgnore.Contains(OtherBlock))
+							BlocksToYeet.Add(OtherBlock);
+					}
+					else
+						return false;
+				}
+			}
+		}
+		for (auto& BlockToYeet : BlocksToYeet)
+		{
+			BlockToYeet->BlocksToIgnore.Add(this);
+			BlockToYeet->BlocksToIgnore = BlockToYeet->BlocksToIgnore.Union(BlocksToIgnore);
+			if (!BlockToYeet->PreYeet())
+				return false;
+		}
+		PostYeet();
+		return true;
+	}
+	return false;
 }
 
 void ABaseBlock::MoveBlock(FVector Direction, ABullet* Bullet)
@@ -105,7 +184,7 @@ void ABaseBlock::MoveBlock(FVector Direction, ABullet* Bullet)
 			EndPosition,
 			GetActorRotation().Quaternion(),
 			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(45, 45, 45)),
+			FCollisionShape::MakeBox(FVector(50, 45, 45)),
 			Params))
 		{
 			SetActorLocation(EndPosition);

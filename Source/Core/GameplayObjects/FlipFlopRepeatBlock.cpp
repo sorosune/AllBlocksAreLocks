@@ -15,7 +15,8 @@ void AFlipFlopRepeatBlock::BeginPlay()
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AFlipFlopRepeatBlock::PreYeet);
+		FTimerDelegate TimerDelegate; 
+		TimerDelegate.BindUFunction(this, FName("PreYeet"));
 		World->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, FlipFlopTime, bFlipFlopRepeat);
 	}
 }

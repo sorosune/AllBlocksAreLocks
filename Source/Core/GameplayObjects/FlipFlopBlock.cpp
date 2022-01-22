@@ -16,7 +16,8 @@ void AFlipFlopBlock::OnBulletHit(ABullet* Bullet)
 		if (!World->GetTimerManager().IsTimerActive(TimerHandle))
 		{
 			PreYeet();
-			FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AFlipFlopBlock::PreYeet);
+			FTimerDelegate TimerDelegate;
+			TimerDelegate.BindUFunction(this, FName("PreYeet"));
 			World->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, FlipFlopTime, false);
 		}
 		else

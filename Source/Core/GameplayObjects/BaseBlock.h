@@ -68,6 +68,11 @@ public:
 
 	// Initialized Variables
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<UStaticMeshComponent*> LinkedBlocks;
+
+	TSet<ABaseBlock*> BlocksToIgnore;
+
 	// Constructor
 	ABaseBlock();
 
@@ -79,9 +84,14 @@ public:
 
 	virtual void OnPlayerOverlap(ABlocksPlayer* Player) { ; };
 
-	virtual void PreYeet();
+	UFUNCTION()
+	virtual bool PreYeet();
 
+	UFUNCTION()
 	virtual void PostYeet();
+
+	UFUNCTION()
+	virtual bool LinkedPreYeet();
 
 	virtual void MoveBlock(FVector Direction, ABullet* Bullet = nullptr);
 
