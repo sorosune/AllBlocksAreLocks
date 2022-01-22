@@ -95,7 +95,7 @@ void ABlocksPlayer::MoveBackward(float Value)
 void ABlocksPlayer::FireBullet()
 {
 	FVector AimDirection3D = FVector(AimDirection.X, 0, AimDirection.Y);
-	FVector Location = GetActorLocation() + (100 * AimDirection3D);
+	FVector Location = GetActorLocation() + (110 * AimDirection3D);
 	UWorld* World = GetWorld();
 	if (World)
 	{
