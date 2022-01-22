@@ -16,5 +16,5 @@ void ALinkedBlock::BeginPlay()
 
 void ALinkedBlock::OnBulletHit(ABullet* Bullet)
 {
-	LinkedPreYeet();
+	PreYeet();
 }

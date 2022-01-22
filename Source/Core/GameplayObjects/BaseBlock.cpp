@@ -34,53 +34,14 @@ void ABaseBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 
 bool ABaseBlock::PreYeet()
 {
-	if (LinkedBlocks.Num())
-		return LinkedPreYeet();
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		TArray<FHitResult> Hits;
-		FVector Position = FVector(GetActorLocation().X, GetActorLocation().Y, -GetActorLocation().Z);
-		FVector Forward;
-		if (World->SweepMultiByChannel(Hits,
-			Position,
-			Position,
-			GetActorRotation().Quaternion(),
-			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(50, 50, 50))))
-		{
-			for (auto& Hit : Hits)
-			{
-				if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 99.9 * 99.9)
-					continue;
-				ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
-				if (OtherBlock)
-				{
-					if (!BlocksToIgnore.Contains(OtherBlock))
-					{
-						OtherBlock->BlocksToIgnore.Add(this);
-						OtherBlock->BlocksToIgnore = OtherBlock->BlocksToIgnore.Union(BlocksToIgnore);
-						if (!OtherBlock->PreYeet())
-							return false;
-					}
-				}
-				else
-					return false;
-			}
-		}
-		PostYeet();
-		return true;
-	}
-	return false;
-}
-
-bool ABaseBlock::LinkedPreYeet()
-{
+	TSet<UStaticMeshComponent*> OurBlocks;
+	OurBlocks.Append(LinkedBlocks);
+	OurBlocks.Add(Mesh);
 	UWorld* World = GetWorld();
 	if (World)
 	{
 		TSet<ABaseBlock*> BlocksToYeet;
-		for (auto& Block : LinkedBlocks)
+		for (auto& Block : OurBlocks)
 		{
 			TArray<FHitResult> Hits;
 			FVector Position = FVector(Block->GetComponentLocation().X, Block->GetComponentLocation().Y, -Block->GetComponentLocation().Z);

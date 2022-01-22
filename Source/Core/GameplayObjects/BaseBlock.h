@@ -88,9 +88,6 @@ public:
 	virtual bool PreYeet();
 
 	UFUNCTION()
-	virtual bool LinkedPreYeet();
-
-	UFUNCTION()
 	virtual void PostYeet();
 
 	virtual void MoveBlock(FVector Direction, ABullet* Bullet = nullptr);
