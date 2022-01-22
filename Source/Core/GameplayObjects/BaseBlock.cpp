@@ -51,10 +51,7 @@ bool ABaseBlock::PreYeet()
 		{
 			for (auto& Hit : Hits)
 			{
-				ABlocksPlayer* Player = Cast<ABlocksPlayer>(Hit.GetActor());
-				if (Player)
-					return false;
-				if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 50 * 50)
+				if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 99.9 * 99.9)
 					continue;
 				ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
 				if (OtherBlock)
@@ -116,10 +113,7 @@ bool ABaseBlock::LinkedPreYeet()
 			{
 				for (auto& Hit : Hits)
 				{
-					ABlocksPlayer* Player = Cast<ABlocksPlayer>(Hit.GetActor());
-					if (Player)
-						return false;
-					if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 50 * 50)
+					if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 99.9 * 99.9)
 						continue;
 					ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
 					if (OtherBlock)
