@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core/GameplayObjects/BigFlip.h"
 #include "Engine/GameInstance.h"
 #include "BlocksGameInstance.generated.h"
 
@@ -23,7 +24,10 @@ public:
 	// Blueprint Variables
 
 	// Getters
-
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
+	static ABigFlip * GetFlipper(UObject * Context);
+	
+	
 	// Setters
 
 	// Wrappers
@@ -43,6 +47,7 @@ public:
 	// Flags
 
 	// Initialized Variables
+	ABigFlip * Flipper;
 
 	// Constructor
 	UBlocksGameInstance();
