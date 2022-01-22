@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "BaseBlock.h"
-#include "BounceBlock.generated.h"
+#include "RicochetBlock.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ALLBLOCKSARELOCKS_API ABounceBlock : public ABaseBlock
+class ALLBLOCKSARELOCKS_API ARicochetBlock : public ABaseBlock
 {
 	GENERATED_BODY()
 
@@ -45,7 +45,7 @@ public:
 	// Initialized Variables
 
 	// Constructor
-	ABounceBlock();
+	ARicochetBlock();
 
 	// Initializers, and Actor Lifecycle Functions
 
@@ -74,4 +74,5 @@ private:
 	// Overrides
 
 	// Regular Functions
+
 };

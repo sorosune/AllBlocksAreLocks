@@ -7,3 +7,8 @@ ABounceBlock::ABounceBlock()
 {
 
 }
+
+void ABounceBlock::OnBulletHit(ABullet* Bullet)
+{
+	PreYeet();
+}
