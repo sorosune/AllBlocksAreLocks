@@ -11,6 +11,7 @@
 #include "Core/GameplayObjects/Bullet.h"
 #include "Core/GameplayObjects/BounceBlock.h"
 #include "Core/HelperFiles/DefinedDebugHelpers.h"
+#include "Core/GameSystems/BlocksGameInstance.h"
 
 ABlocksPlayer::ABlocksPlayer()
 {
@@ -55,6 +56,7 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("AimDiagonalDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<3>);
 	PlayerInputComponent->BindAction("AimLeft", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<4>);
 	PlayerInputComponent->BindAction("AimRight", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<5>);
+	PlayerInputComponent->BindAction("DaBigFlip", IE_Pressed, this, &ABlocksPlayer::ManualWorldSwap);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABlocksPlayer::MoveForward);
 	PlayerInputComponent->BindAxis("MoveBackward", this, &ABlocksPlayer::MoveBackward);
@@ -63,7 +65,6 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 void ABlocksPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
 	SetActorRotation(FRotator(0, 0, 0));
 }
 
@@ -140,7 +141,7 @@ void ABlocksPlayer::ChangeAimDirection()
 void ABlocksPlayer::ManualWorldSwap()
 {
 	if (!ManualSwapLocks)
-		int x = 1; // swap worlds
+		UBlocksGameInstance::GetFlipper(this)->Flip();
 }
 
 void ABlocksPlayer::EnableWorldSwap()

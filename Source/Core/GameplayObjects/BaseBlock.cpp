@@ -3,6 +3,7 @@
 
 #include "BaseBlock.h"
 #include "Core/Actors/BlocksPlayer.h"
+#include <Core/GameSystems/BlocksGameInstance.h>
 
 // Sets default values
 ABaseBlock::ABaseBlock()
@@ -45,29 +46,24 @@ bool ABaseBlock::PreYeet()
 		TSet<ABaseBlock*> BlocksToYeet;
 		for (auto& Block : OurBlocks)
 		{
-			TArray<FHitResult> Hits;
+			FHitResult Hit;
 			FVector Position = FVector(Block->GetComponentLocation().X, Block->GetComponentLocation().Y, -Block->GetComponentLocation().Z);
 			FVector Forward;
-			if (World->SweepMultiByChannel(Hits,
+			if (World->SweepSingleByChannel(Hit,
 				Position,
 				Position,
-				GetActorRotation().Quaternion(),
+				FQuat::Identity,
 				ECollisionChannel::ECC_Camera,
-				FCollisionShape::MakeBox(FVector(50, 50, 50))))
+				FCollisionShape::MakeBox(FVector(49.9, 50, 49.9))))
 			{
-				for (auto& Hit : Hits)
+				ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
+				if (OtherBlock && OtherBlock->bIsYeetable)
 				{
-					if ((Hit.GetComponent()->GetComponentLocation() - Position).SizeSquared() > 99.9 * 99.9)
-						continue;
-					ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
-					if (OtherBlock && OtherBlock->bIsYeetable)
-					{
-						if (!BlocksToIgnore.Contains(OtherBlock))
-							BlocksToYeet.Add(OtherBlock);
-					}
-					else
-						return false;
+					if (!BlocksToIgnore.Contains(OtherBlock))
+						BlocksToYeet.Add(OtherBlock);
 				}
+				else
+					return false;
 			}
 		}
 		for (auto& BlockToYeet : BlocksToYeet)
@@ -92,11 +88,12 @@ void ABaseBlock::PostYeet()
 		if (LinkedBlocks[i] == Mesh)
 			continue;
 		float Distance;
+		ABigFlip* BigFlip = UBlocksGameInstance::GetFlipper(this);
 		if (GetActorLocation().Z > 0)
 			Distance = -(LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
 		else
 			Distance = (LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
-		LinkedBlocks[i]->AddLocalOffset(FVector(0, 0, Distance * 2 * FMath::Sign(GetActorLocation().Z)));
+		LinkedBlocks[i]->AddWorldOffset(FVector(0, 0, Distance * 2 * FMath::Sign(GetActorLocation().Z)));
 	}
 	dOnYeeted.Broadcast(WorldNum);
 	BlocksToIgnore.Empty();
@@ -141,7 +138,7 @@ void ABaseBlock::MoveBlock(FVector Direction, ABullet* Bullet)
 			EndPosition,
 			GetActorRotation().Quaternion(),
 			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(50, 45, 45)),
+			FCollisionShape::MakeBox(FVector(49.9, 50, 49.9)),
 			Params))
 		{
 			SetActorLocation(EndPosition);
