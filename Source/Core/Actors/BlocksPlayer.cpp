@@ -141,7 +141,10 @@ void ABlocksPlayer::ChangeAimDirection()
 void ABlocksPlayer::ManualWorldSwap()
 {
 	if (!ManualSwapLocks)
-		UBlocksGameInstance::GetFlipper(this)->Flip();
+	{
+		if(UBlocksGameInstance::GetFlipper(this)->Flip())
+			WorldNum = !WorldNum;
+	}
 }
 
 void ABlocksPlayer::EnableWorldSwap()

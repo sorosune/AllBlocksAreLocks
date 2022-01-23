@@ -10,6 +10,19 @@ ALockBlock::ALockBlock()
 
 }
 
+void ALockBlock::BeginPlay()
+{
+	Super::BeginPlay();
+	ABlocksPlayer* Player = Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Player)
+	{
+		if (Player->WorldNum == WorldNum)
+			Player->DisableWorldSwap();
+		else
+			Player->EnableWorldSwap();
+	}
+}
+
 void ALockBlock::OnBulletHit(ABullet* Bullet)
 {
 	PreYeet();

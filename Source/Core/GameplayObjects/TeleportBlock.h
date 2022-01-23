@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BaseBlock.h"
-#include "LockBlock.generated.h"
+#include "TeleportBlock.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ALLBLOCKSARELOCKS_API ALockBlock : public ABaseBlock
+class ALLBLOCKSARELOCKS_API ATeleportBlock : public ABaseBlock
 {
 	GENERATED_BODY()
-
+	
 //======================================================================================
 // Blueprint Public
 public:
@@ -45,13 +45,9 @@ public:
 	// Initialized Variables
 
 	// Constructor
-	ALockBlock();
+	ATeleportBlock();
 
 	// Initializers, and Actor Lifecycle Functions
-
-	virtual void BeginPlay() override;
-
-	virtual void OnBulletHit(ABullet* Bullet) override;
 
 //======================================================================================
 // C++ Protected
@@ -62,6 +58,10 @@ protected:
 	// Internal Virtual Functions
 
 	// Internal Overrides
+
+	virtual void OnBulletHit(ABullet* Bullet) override;
+
+	virtual void OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent* OverlappedMesh) override;
 
 	// Internal Regular Functions
 

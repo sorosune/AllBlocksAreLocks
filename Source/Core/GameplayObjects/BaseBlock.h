@@ -58,6 +58,12 @@ public:
 
 	// External Regular Functions
 
+	UFUNCTION(BlueprintCallable)
+	ABullet* SpawnBullet(FVector Direction);
+
+	UFUNCTION(BlueprintCallable)
+	bool MoveCharacterOnTop(ACharacter* Actor);
+
 	// External Events
 
 	UPROPERTY(BlueprintAssignable)
@@ -75,6 +81,9 @@ public:
 	TArray<UStaticMeshComponent*> LinkedBlocks;
 
 	TSet<ABaseBlock*> BlocksToIgnore;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	int WorldNum;
 
 	// Constructor
 	ABaseBlock();
@@ -95,14 +104,14 @@ public:
 
 	virtual void MoveBlock(FVector Direction, ABullet* Bullet = nullptr);
 
+	// Returns true if the space is occupied.
+	bool CheckGridSpace(FVector Position, FHitResult& HitResult);
+
 //======================================================================================
 // C++ Protected
 protected:
 
 	// Internal Variables
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	int WorldNum;
 
 	FTimerHandle TimerHandle;
 

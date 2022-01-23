@@ -33,6 +33,49 @@ void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 	}
 }
 
+ABullet* ABaseBlock::SpawnBullet(FVector Direction)
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FVector Position = GetActorLocation() + 125 * Direction;
+		ABullet* NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
+		if (NewBullet)
+		{
+			if (FMath::Abs(Direction.X) >= FMath::Abs(Direction.Z))
+			{
+				NewBullet->Direction = FVector2D(FMath::Sign(Direction.X), 0);
+				NewBullet->Direction.Normalize();
+			}
+			else
+			{
+				NewBullet->Direction = FVector2D(0, FMath::Sign(Direction.Z));
+				NewBullet->Direction.Normalize();
+			}
+		}
+		return NewBullet;
+	}
+	return nullptr;
+}
+
+bool ABaseBlock::MoveCharacterOnTop(ACharacter* Actor)
+{
+	UWorld* World = GetWorld();
+	if (Actor && World)
+	{
+		FHitResult Hit1;
+		FHitResult Hit2;
+		FVector Position1 = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 100);
+		FVector Position2 = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 200);
+		if (!CheckGridSpace(Position1, Hit1) && !CheckGridSpace(Position2, Hit2))
+		{
+			FVector NewPosition = FVector(GetActorLocation().X, GetActorLocation().Y, -GetActorLocation().Z + 150);
+			return Actor->SetActorLocation(NewPosition);
+		}
+	}
+	return false;
+}
+
 bool ABaseBlock::PreYeet()
 {
 	if (!bIsYeetable)
@@ -48,13 +91,7 @@ bool ABaseBlock::PreYeet()
 		{
 			FHitResult Hit;
 			FVector Position = FVector(Block->GetComponentLocation().X, Block->GetComponentLocation().Y, -Block->GetComponentLocation().Z);
-			FVector Forward;
-			if (World->SweepSingleByChannel(Hit,
-				Position,
-				Position,
-				FQuat::Identity,
-				ECollisionChannel::ECC_Camera,
-				FCollisionShape::MakeBox(FVector(49.9, 50, 49.9))))
+			if (CheckGridSpace(Position, Hit))
 			{
 				ABaseBlock* OtherBlock = Cast<ABaseBlock>(Hit.GetActor());
 				if (OtherBlock && OtherBlock->bIsYeetable)
@@ -124,24 +161,23 @@ void ABaseBlock::MoveBlock(FVector Direction, ABullet* Bullet)
 		Direction.X = 0;
 		Direction.Z /= FMath::Abs(Direction.Z);
 	}
+	FHitResult Hit;
+	FVector Position = GetActorLocation() + 100 * Direction;
+	if (!CheckGridSpace(Position, Hit))
+	{
+		SetActorLocation(Position);
+	}
+}
+
+bool ABaseBlock::CheckGridSpace(FVector Position, FHitResult& HitResult)
+{
 	UWorld* World = GetWorld();
 	if (World)
-	{
-		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this);
-		FHitResult Hit;
-		FVector StartPosition = GetActorLocation();
-		FVector EndPosition = StartPosition + 100 * Direction;
-		FVector Forward;
-		if (!World->SweepSingleByChannel(Hit,
-			StartPosition,
-			EndPosition,
-			GetActorRotation().Quaternion(),
-			ECollisionChannel::ECC_Camera,
-			FCollisionShape::MakeBox(FVector(49.9, 50, 49.9)),
-			Params))
-		{
-			SetActorLocation(EndPosition);
-		}
-	}
+		return World->SweepSingleByChannel(HitResult,
+										   Position,
+										   Position,
+			                               FQuat::Identity,
+										   ECollisionChannel::ECC_Camera,
+										   FCollisionShape::MakeBox(FVector(49.9, 50, 49.9)));
+	return false;
 }
