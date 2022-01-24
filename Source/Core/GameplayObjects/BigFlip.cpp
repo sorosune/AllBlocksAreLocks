@@ -18,12 +18,33 @@ bool ABigFlip::Flip()
 	FVector Position = player->GetActorLocation();
 	Position = FVector(Position.X, Position.Y, -Position.Z);
 	FVector Forward;
-	if (!GetWorld()->SweepSingleByChannel(Hit,Position,Position,
+	if (GetWorld()->SweepSingleByChannel(Hit,Position,Position,
 		FQuat::Identity,	ECollisionChannel::ECC_Camera,
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
-			AddActorLocalRotation(FRotator(0, 0, 180));
-	else
 			return false;
+	AddActorLocalRotation(FRotator(0, 0, 180));
+	return true;
+}
+
+bool ABigFlip::TeleportPlayer(ABaseBlock* block)
+{
+	FHitResult Hit;
+	ABlocksPlayer * player = Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if(!player)
+		return false;
+	FVector Position = block->GetActorLocation();
+	if(Position.Z < 0)
+		Position = FVector(Position.X, Position.Y, Position.Z-150);
+	else
+		Position = FVector(Position.X, Position.Y, Position.Z+150);
+	FVector Forward;
+	if (GetWorld()->SweepSingleByChannel(Hit,Position,Position,
+		FQuat::Identity,	ECollisionChannel::ECC_Camera,
+		FCollisionShape::MakeBox(FVector(45, 40, 90))))
+			return false;
+	if(Position.Z < 0)
+		AddActorLocalRotation(FRotator(0, 0, 180));
+	player->SetActorLocation(Position);
 	return true;
 }
 

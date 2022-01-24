@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Core/GameplayObjects/BaseBlock.h"
 #include "BigFlip.generated.h"
 
 UCLASS(Blueprintable, BlueprintType)
@@ -30,7 +31,11 @@ public:
 	// External Overrides
 
 	// External Regular Functions
+	UFUNCTION(BlueprintCallable)
 	bool Flip();
+	
+	UFUNCTION(BlueprintCallable)
+	bool TeleportPlayer(ABaseBlock * block);
 
 	// External Events
 
