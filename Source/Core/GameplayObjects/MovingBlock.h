@@ -21,16 +21,20 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 	// Blueprint Flags
 
 	// Blueprint Variables
+
+	/** X=horizontal movement, Y=vertical movement in grid units */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D NumBlocksToMove = FVector2D(0);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCurveFloat* MovementCurve;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed;
+	float MoveSpeed = 1.f;
 
 	// Getters
 
 	// Setters
+	
+	UFUNCTION(BlueprintCallable)
+	void SetTimeline(UPARAM(ref) UTimelineComponent* TimelineComponent);
 
 	// Wrappers
 
@@ -57,22 +61,17 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaSeconds) override;
-
 	//======================================================================================
 	// C++ Protected
 	protected:
 
 	// Internal Variables
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	FVector StartLocation;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TEnumAsByte<ETimelineDirection::Type> MovementDirection;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector EndLocation;
-
-	/** X=horizontal movement, Y=vertical movement in grid units */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector2D NumBlocksToMove = FVector2D(0);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector TargetLocation;
 
 	// Internal Virtual Functions
 
@@ -80,7 +79,13 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 
 	// Internal Regular Functions
 
-	// Internal Events and Implementations 
+	// Internal Events and Implementations
+	
+	UFUNCTION(BlueprintCallable)
+	void Move(ETimelineDirection::Type Direction, float Alpha);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ReverseMovement(ETimelineDirection::Type CurrentDirection);
 
 	//======================================================================================
 	// C++ Private
@@ -88,13 +93,15 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 
 	// Internal Variables
 	FVector Bounds;
-
-	FTimeline MoveTimeline;
+	FVector StartLocation;
+	
+	UPROPERTY()
+	UTimelineComponent* Timeline;
 
 	// Overrides
 
 	// Regular Functions
+	
 	UFUNCTION()
-	void Move(float Value);
-
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

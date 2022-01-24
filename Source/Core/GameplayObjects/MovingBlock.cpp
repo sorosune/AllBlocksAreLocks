@@ -2,6 +2,8 @@
 
 
 #include "MovingBlock.h"
+#include "Core/Actors/BlocksPlayer.h"
+
 
 AMovingBlock::AMovingBlock()
 {
@@ -9,48 +11,55 @@ AMovingBlock::AMovingBlock()
 
 void AMovingBlock::BeginPlay()
 {
-	Super::BeginPlay();
-
-	if (MovementCurve)
-	{
-		// Like a delegate. Contains the signature of the function that runs on timeline tick
-		FOnTimelineFloat TimelineCallback;
-		// FOnTimelineEventStatic TimelineFinishedCallback;
-
-		TimelineCallback.BindUFunction(this, FName("Move"));
-		MoveTimeline.AddInterpFloat(MovementCurve, TimelineCallback);
-		MoveTimeline.SetLooping(true);
-	}
-
+	Super::BeginPlay();	
 	// Box Extent is technically half-bounds
 	Bounds = Mesh->CalcBounds(FTransform::Identity).BoxExtent * 2;
 
 	// NumBlocksToMove = (horizontal offset, vertical offset)
-	StartLocation = EndLocation = GetActorLocation();
-	EndLocation.X += NumBlocksToMove.X * Bounds.X;
-	EndLocation.Z += NumBlocksToMove.Y * Bounds.Z;
+	StartLocation = TargetLocation = GetActorLocation();
+	TargetLocation.X += NumBlocksToMove.X * Bounds.X;
+	TargetLocation.Z += NumBlocksToMove.Y * Bounds.Z;
+	
+	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMovingBlock::OnOverlapBegin);
 
-	MoveTimeline.PlayFromStart();
+	if (Timeline)
+	{
+		Timeline->SetPlayRate(MoveSpeed);
+		Timeline->SetLooping(true);
+		Timeline->PlayFromStart();
+	}
 	
 #if WITH_ENGINE
 	// just to be able to see target location
 	UWorld* World = GetWorld();
 	if (World)
-	{
-		DrawDebugBox(World, EndLocation, Bounds/2.f, FColor::Green, true);
-	}
+		DrawDebugBox(World, TargetLocation, Bounds/2.f, FColor::Green, true);
 #endif
 }
 
-void AMovingBlock::Tick(float DeltaSeconds)
+void AMovingBlock::SetTimeline(UTimelineComponent* TimelineComponent)
 {
-	Super::Tick(DeltaSeconds);
-	
-	MoveTimeline.TickTimeline(DeltaSeconds * MoveSpeed);
+	Timeline = TimelineComponent;
 }
 
-void AMovingBlock::Move(float Value)
+void AMovingBlock::Move(ETimelineDirection::Type Direction, float Alpha)
 {
-	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Value);
+	MovementDirection = Direction;
+	const FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, Alpha);
 	SetActorLocation(NewLocation);
+}
+
+void AMovingBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ABaseBlock* Block = Cast<ABaseBlock>(OtherActor);
+	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
+
+	if (Block || Player)
+	{
+		if (MovementDirection == ETimelineDirection::Type::Forward)
+			MovementDirection = ETimelineDirection::Type::Backward;
+		else
+			MovementDirection = ETimelineDirection::Type::Forward;
+		ReverseMovement(MovementDirection);
+	}
 }
