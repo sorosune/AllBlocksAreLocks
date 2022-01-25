@@ -185,3 +185,9 @@ void ABlocksPlayer::OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMe
 		}
 	}
 }
+
+void ABlocksPlayer::Falling()
+{
+	Super::Falling();
+	dOnPlayerFalling.Broadcast();
+}

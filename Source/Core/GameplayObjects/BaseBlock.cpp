@@ -30,6 +30,19 @@ void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 	{
 		OnPlayerOverlap(Player, OtherComp);
 		Player->OnBlockTouch(this, HitComp);
+		bIsPlayerTouching = true;
+		if (!Player->dOnPlayerFalling.IsAlreadyBound(this, &ABaseBlock::ResetPlayerTouching))
+			Player->dOnPlayerFalling.AddDynamic(this, &ABaseBlock::ResetPlayerTouching);
+	}
+}
+
+void ABaseBlock::ResetPlayerTouching()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		bIsPlayerTouching = false;
+		Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerCharacter(World, 0))->dOnPlayerFalling.RemoveDynamic(this, &ABaseBlock::ResetPlayerTouching);
 	}
 }
 

@@ -8,6 +8,8 @@
 
 class ABaseBlock;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnActorFalling);
+
 UCLASS(Blueprintable, BlueprintType)
 class ALLBLOCKSARELOCKS_API ABlocksPlayer: public ACharacter
 {
@@ -54,6 +56,9 @@ public:
 
 	// External Events
 
+	UPROPERTY(BlueprintAssignable)
+	FOnActorFalling dOnPlayerFalling;
+
 //======================================================================================
 // C++ Public
 public:
@@ -80,6 +85,8 @@ public:
 	void BeginPlay() override;
 
 	void OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMesh);
+
+	void Falling() override;
 
 //======================================================================================
 // C++ Protected
