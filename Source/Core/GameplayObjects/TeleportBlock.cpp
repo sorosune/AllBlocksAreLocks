@@ -24,18 +24,8 @@ void ATeleportBlock::OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent*
 {
 	if (PairedBlock)
 	{
-		bool flipped = false;
-		if (PairedBlock->WorldNum != WorldNum)
-		{
-			flipped = UBlocksGameInstance::GetFlipper(this)->Flip();
-			if (!flipped)
-				return;
-		}
-		bool moved = PairedBlock->MoveCharacterOnTop(Player);
-		if ((!moved) && flipped)
-		{
-			//UBlocksGameInstance::GetFlipper(this)->Flip();
-		}
+		Player->GetMovementComponent()->Velocity = FVector(0, 0, 0);
+		UBlocksGameInstance::GetFlipper(this)->TeleportPlayer(PairedBlock);
 	}
 }
 
