@@ -61,6 +61,8 @@ protected:
 
 	virtual void OnBulletHit(ABullet* Bullet) override;
 
+	virtual void OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent* OverlappedMesh) override;
+
 	// Internal Regular Functions
 
 	// Internal Events and Implementations 

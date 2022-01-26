@@ -12,3 +12,15 @@ void ABounceBlock::OnBulletHit(ABullet* Bullet)
 {
 	PreYeet();
 }
+
+void ABounceBlock::OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent* OverlappedMesh)
+{
+	UWorld* World = GetWorld();
+	if (World && Player)
+	{
+		bOnCooldown = true;
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, FName("ResetOnCooldown"));
+		World->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, BlockCooldown, false);
+	}
+}

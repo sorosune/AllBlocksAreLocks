@@ -115,11 +115,18 @@ protected:
 
 	FTimerHandle TimerHandle;
 
+	float BlockCooldown = 0.1;
+
+	bool bOnCooldown = false;
+
 	// Internal Virtual Functions
 
 	// Internal Overrides
 
 	// Internal Regular Functions
+
+	UFUNCTION()
+	void ResetOnCooldown() { bOnCooldown = false; };
 
 	// Internal Events and Implementations 
 

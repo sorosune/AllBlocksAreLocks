@@ -165,6 +165,7 @@ void ABlocksPlayer::OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMe
 {
 	if (Cast<ABounceBlock>(Block) && BlockMesh)
 	{
+		SCREENMSG("BOUNCE");
 		FVector Velocity = GetCharacterMovement()->GetLastUpdateVelocity();
 		float DeltaX = 0;
 		float DeltaZ = 0;

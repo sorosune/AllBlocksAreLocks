@@ -26,7 +26,7 @@ void ABaseBlock::BeginPlay()
 void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
-	if (Player)
+	if (Player && !bOnCooldown)
 	{
 		OnPlayerOverlap(Player, OtherComp);
 		Player->OnBlockTouch(this, HitComp);
