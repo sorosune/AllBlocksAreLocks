@@ -77,6 +77,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int ManualSwapLocks = 0;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bHasKey = false;
+
 	// Constructor
 	ABlocksPlayer();
 

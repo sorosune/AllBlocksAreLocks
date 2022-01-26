@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
+#include "PlayerOverlap.h"
 #include "WorldSwapPickup.generated.h"
 
 UCLASS()
-class ALLBLOCKSARELOCKS_API AWorldSwapPickup : public AActor
+class ALLBLOCKSARELOCKS_API AWorldSwapPickup : public APlayerOverlap
 {
 	GENERATED_BODY()
 
@@ -19,9 +18,6 @@ public:
 	// Blueprint Flags
 
 	// Blueprint Variables
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UBoxComponent* BoxComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int WorldSwapsToAdd = 2;

@@ -7,8 +7,7 @@
 // Sets default values
 AWorldSwapPickup::AWorldSwapPickup()
 {
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	BoxComponent->SetCollisionProfileName("OverlapPlayer");
+
 }
 
 // Called when the game starts or when spawned

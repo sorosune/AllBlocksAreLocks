@@ -4,26 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "PlayerOverlap.h"
-#include "LevelExit.generated.h"
+#include "LevelKey.generated.h"
 
 UCLASS()
-class ALLBLOCKSARELOCKS_API ALevelExit : public APlayerOverlap
+class ALLBLOCKSARELOCKS_API ALevelKey : public APlayerOverlap
 {
 	GENERATED_BODY()
 	
-//======================================================================================
-// Blueprint Public
+		//======================================================================================
+		// Blueprint Public
 public:
 
 	// Blueprint Flags
 
 	// Blueprint Variables
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString LevelToLoad;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bRequiresKey = false;
 
 	// Getters
 
@@ -48,7 +42,7 @@ public:
 	// Initialized Variables
 
 	// Constructor
-	ALevelExit();
+	ALevelKey();
 
 	// Initializers, and Actor Lifecycle Functions
 
@@ -58,8 +52,8 @@ public:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 
-//======================================================================================
-// C++ Protected
+	//======================================================================================
+	// C++ Protected
 protected:
 
 	// Internal Variables
@@ -81,4 +75,5 @@ private:
 	// Overrides
 
 	// Regular Functions
+
 };

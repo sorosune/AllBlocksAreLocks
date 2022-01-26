@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerOverlap.h"
-#include "LevelExit.generated.h"
+#include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
+#include "PlayerOverlap.generated.h"
 
 UCLASS()
-class ALLBLOCKSARELOCKS_API ALevelExit : public APlayerOverlap
+class ALLBLOCKSARELOCKS_API APlayerOverlap : public AActor
 {
 	GENERATED_BODY()
 	
@@ -20,10 +21,7 @@ public:
 	// Blueprint Variables
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString LevelToLoad;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bRequiresKey = false;
+	UBoxComponent* BoxComponent;
 
 	// Getters
 
@@ -48,18 +46,12 @@ public:
 	// Initialized Variables
 
 	// Constructor
-	ALevelExit();
+	APlayerOverlap();
 
 	// Initializers, and Actor Lifecycle Functions
 
-	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-
-//======================================================================================
-// C++ Protected
+	//======================================================================================
+	// C++ Protected
 protected:
 
 	// Internal Variables
@@ -81,4 +73,5 @@ private:
 	// Overrides
 
 	// Regular Functions
+
 };

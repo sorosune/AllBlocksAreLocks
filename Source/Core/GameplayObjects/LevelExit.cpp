@@ -8,8 +8,7 @@
 // Sets default values
 ALevelExit::ALevelExit()
 {
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	BoxComponent->SetCollisionProfileName("OverlapPlayer");
+
 }
 
 // Called when the game starts or when spawned
@@ -21,7 +20,11 @@ void ALevelExit::BeginPlay()
 
 void ALevelExit::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Cast<ABlocksPlayer>(OtherActor))
+	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
+	if (Player && (Player->bHasKey || !bRequiresKey))
+	{
 		SCREENMSG("Load Next Level");
+		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelToLoad));
+	}
 }
 
