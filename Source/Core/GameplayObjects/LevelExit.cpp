@@ -9,7 +9,7 @@
 ALevelExit::ALevelExit()
 {
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	BoxComponent->SetCollisionProfileName("LevelExit");
+	BoxComponent->SetCollisionProfileName("OverlapPlayer");
 }
 
 // Called when the game starts or when spawned
