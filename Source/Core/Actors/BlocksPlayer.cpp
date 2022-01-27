@@ -68,6 +68,27 @@ void ABlocksPlayer::BeginPlay()
 	SetActorRotation(FRotator(0, 0, 0));
 }
 
+void ABlocksPlayer::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFunction& ThisTickFunction)
+{
+	Super::TickActor(DeltaTime, Tick, ThisTickFunction);
+	FVector pos = GetActorLocation();
+	if(GetActorLocation().Z < 0)
+	{
+		ABigFlip * flipper = UBlocksGameInstance::GetFlipper(this);
+		if(flipper)
+		{
+			if(flipper->Flip())
+			{
+				pos.Z = 0.01;
+				FVector newVel = GetMovementComponent()->Velocity;
+				SetActorLocation(pos,false,nullptr, ETeleportType::TeleportPhysics);
+				newVel.Z *= -.90;
+				GetMovementComponent()->Velocity = newVel;
+			}
+		}
+	}
+}
+
 void ABlocksPlayer::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
