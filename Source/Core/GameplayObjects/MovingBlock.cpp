@@ -7,19 +7,19 @@
 
 AMovingBlock::AMovingBlock()
 {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Start = CreateDefaultSubobject<USceneComponent>(TEXT("Start"));
+	Target = CreateDefaultSubobject<USceneComponent>(TEXT("Target"));
+
+	Mesh->SetupAttachment(RootComponent);
+	Start->SetupAttachment(RootComponent);
+	Target->SetupAttachment(RootComponent);
 }
 
 void AMovingBlock::BeginPlay()
 {
 	Super::BeginPlay();	
-	// Box Extent is technically half-bounds
-	Bounds = Mesh->CalcBounds(FTransform::Identity).BoxExtent * 2;
 
-	// NumBlocksToMove = (horizontal offset, vertical offset)
-	StartLocation = TargetLocation = GetActorLocation();
-	TargetLocation.X += NumBlocksToMove.X * Bounds.X;
-	TargetLocation.Z += NumBlocksToMove.Y * Bounds.Z;
-	
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &AMovingBlock::OnOverlapBegin);
 
 	if (Timeline)
@@ -34,8 +34,9 @@ void AMovingBlock::BeginPlay()
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		DrawDebugBox(World, StartLocation, Bounds/2.f, FColor::Green, true);
-		DrawDebugBox(World, TargetLocation, Bounds/2.f, FColor::Green, true);
+		const FVector Bounds = FVector(50.f);
+		DrawDebugBox(World, Start->GetComponentLocation(), Bounds, FColor::Green, true);
+		DrawDebugBox(World, Target->GetComponentLocation(), Bounds, FColor::Green, true);
 	}
 #endif
 }
@@ -48,8 +49,9 @@ void AMovingBlock::SetTimeline(UTimelineComponent* TimelineComponent)
 void AMovingBlock::Move(ETimelineDirection::Type Direction, float Alpha)
 {
 	MovementDirection = Direction;
-	const FVector NewLocation = FMath::Lerp(StartLocation, TargetLocation, Alpha);
-	SetActorLocation(NewLocation);
+
+	const FVector NewLocation = FMath::Lerp(Start->GetRelativeLocation(), Target->GetRelativeLocation(), Alpha);
+	Mesh->SetRelativeLocation(NewLocation);
 }
 
 void AMovingBlock::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

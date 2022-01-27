@@ -18,13 +18,15 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 	// Blueprint Flags
 
 	// Blueprint Variables
-
-	/** X=horizontal movement, Y=vertical movement in grid units */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector2D NumBlocksToMove = FVector2D(0);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MakeEditWidget))
+	USceneComponent* Start;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MakeEditWidget))
+	USceneComponent* Target;
 
 	// Getters
 
@@ -67,9 +69,6 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TEnumAsByte<ETimelineDirection::Type> MovementDirection;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector TargetLocation;
-
 	// Internal Virtual Functions
 
 	// Internal Overrides
@@ -89,8 +88,6 @@ class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 	private:
 
 	// Internal Variables
-	FVector Bounds;
-	FVector StartLocation;
 	
 	UPROPERTY()
 	UTimelineComponent* Timeline;
