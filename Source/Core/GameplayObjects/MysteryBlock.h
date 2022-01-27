@@ -19,8 +19,14 @@ public:
 
 	// Blueprint Variables
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MakeEditWidget))
-	FVector TargetLocation;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MakeEditWidget))
+	// FVector TargetLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* Start;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USceneComponent* Target;
 
 	// Getters
 
@@ -74,9 +80,9 @@ protected:
 private:
 	// Internal Variables
 	
-	FVector StartLocation;
+	// FVector StartLocation;
+	bool bIsAtStart = true;
 	FVector NextLocation;
-	int HomeWorld;
 
 	// Overrides
 

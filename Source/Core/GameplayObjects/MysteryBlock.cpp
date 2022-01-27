@@ -6,23 +6,28 @@
 AMysteryBlock::AMysteryBlock()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Start = CreateDefaultSubobject<USceneComponent>(TEXT("Start"));
+	Target = CreateDefaultSubobject<USceneComponent>(TEXT("Target"));
+
+	Mesh->SetupAttachment(RootComponent);
+	Start->SetupAttachment(RootComponent);
+	Target->SetupAttachment(RootComponent);
 }
 
 void AMysteryBlock::BeginPlay()
 {
 	Super::BeginPlay();
-
-	StartLocation = GetActorLocation();
-	TargetLocation = TargetLocation + StartLocation;	// transform to world
-	HomeWorld = WorldNum;
 	
 #if WITH_ENGINE
 	// just to be able to see target location
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		DrawDebugBox(World, StartLocation, FVector(50.f), FColor::Magenta, true);
-		DrawDebugBox(World, TargetLocation, FVector(50.f), FColor::Magenta, true);
+		const FVector Bounds = FVector(50.f);
+		DrawDebugBox(World, Start->GetComponentLocation(), Bounds, FColor::Magenta, true);
+		DrawDebugBox(World, Target->GetComponentLocation(), Bounds, FColor::Magenta, true);
 	}
 #endif
 }
@@ -32,10 +37,10 @@ bool AMysteryBlock::PreYeet()
 	if (!bIsYeetable)
 		return false;
 	
-	if (WorldNum == HomeWorld)
-		NextLocation = TargetLocation;
+	if (bIsAtStart)
+		NextLocation = Target->GetComponentLocation();
 	else
-		NextLocation = StartLocation;
+		NextLocation = Start->GetComponentLocation();
 
 	FHitResult Hit;
 	if (!CheckGridSpace(NextLocation, Hit))
@@ -48,9 +53,8 @@ bool AMysteryBlock::PreYeet()
 
 void AMysteryBlock::PostYeet()
 {
-	WorldNum = !WorldNum;
-	SetActorLocation(NextLocation);
-	dOnYeeted.Broadcast(WorldNum);
+	bIsAtStart = !bIsAtStart;
+	Mesh->SetWorldLocation(NextLocation);
 }
 
 void AMysteryBlock::OnBulletHit(ABullet* Bullet)
