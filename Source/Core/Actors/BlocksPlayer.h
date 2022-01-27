@@ -87,6 +87,8 @@ public:
 
 	void BeginPlay() override;
 
+	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
+
 	void OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMesh);
 
 	void Falling() override;
