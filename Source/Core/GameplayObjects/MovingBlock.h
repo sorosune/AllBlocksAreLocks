@@ -6,9 +6,6 @@
 #include "BaseBlock.h"
 #include "MovingBlock.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ALLBLOCKSARELOCKS_API AMovingBlock : public ABaseBlock
 {

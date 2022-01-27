@@ -33,7 +33,10 @@ void AMovingBlock::BeginPlay()
 	// just to be able to see target location
 	UWorld* World = GetWorld();
 	if (World)
+	{
+		DrawDebugBox(World, StartLocation, Bounds/2.f, FColor::Green, true);
 		DrawDebugBox(World, TargetLocation, Bounds/2.f, FColor::Green, true);
+	}
 #endif
 }
 
