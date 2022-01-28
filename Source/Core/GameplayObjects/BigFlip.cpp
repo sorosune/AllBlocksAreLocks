@@ -34,17 +34,19 @@ bool ABigFlip::TeleportPlayer(ABaseBlock* block)
 		return false;
 	FVector Position = block->GetActorLocation();
 	if(Position.Z < 0)
-		Position = FVector(Position.X, Position.Y, Position.Z-150);
+		Position.Z -= 150;
 	else
-		Position = FVector(Position.X, Position.Y, Position.Z+150);
+		Position.Z += 150;
 	FVector Forward;
 	if (GetWorld()->SweepSingleByChannel(Hit,Position,Position,
 		FQuat::Identity,	ECollisionChannel::ECC_Camera,
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
 			return false;
 	if(Position.Z < 0)
-		AddActorLocalRotation(FRotator(0, 0, 180));
-	player->SetActorLocation(Position);
+		AddActorLocalRotation(FRotator(0, 0, 180),false, nullptr, ETeleportType::ResetPhysics);
+	Position.Z = abs(Position.Z);
+	Position.Y = 0;
+	player->SetActorLocation(Position, false, nullptr, ETeleportType::ResetPhysics);
 	return true;
 }
 

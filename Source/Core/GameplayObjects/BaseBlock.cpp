@@ -132,13 +132,13 @@ bool ABaseBlock::PreYeet()
 void ABaseBlock::PostYeet()
 {
 	WorldNum = !WorldNum;
-	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z));
+	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z),
+		false, nullptr, ETeleportType::ResetPhysics);
 	for (int i = 0; i < LinkedBlocks.Num(); i++)
 	{
 		if (LinkedBlocks[i] == Mesh)
 			continue;
 		float Distance;
-		ABigFlip* BigFlip = UBlocksGameInstance::GetFlipper(this);
 		if (GetActorLocation().Z > 0)
 			Distance = -(LinkedBlocks[i]->GetComponentLocation() - Mesh->GetComponentLocation()).Z;
 		else
