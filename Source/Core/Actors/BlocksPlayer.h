@@ -32,6 +32,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	
+	/** Z-Velocity after jump release */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ReleaseDrop;
+	
 	// Getters
 
 	/** Returns CameraBoom subobject **/
@@ -89,13 +94,15 @@ public:
 
 	// Initializers, and Actor Lifecycle Functions
 
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 	virtual void TickActor(float DeltaTime, ELevelTick TickType, FActorTickFunction& ThisTickFunction) override;
 
 	void OnBlockTouch(ABaseBlock* Block, UPrimitiveComponent* BlockMesh);
 
-	void Falling() override;
+	virtual void Falling() override;
+
+	virtual void StopJumping() override;;
 
 //======================================================================================
 // C++ Protected

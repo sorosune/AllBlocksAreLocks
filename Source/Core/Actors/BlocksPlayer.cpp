@@ -216,3 +216,11 @@ void ABlocksPlayer::Falling()
 	Super::Falling();
 	dOnPlayerFalling.Broadcast();
 }
+
+void ABlocksPlayer::StopJumping()
+{
+	Super::StopJumping();
+	FVector newVel = GetCharacterMovement()->Velocity;
+	newVel.Z = FMath::Min(ReleaseDrop, newVel.Z);
+	GetCharacterMovement()->Velocity = newVel;
+}
