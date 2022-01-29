@@ -6,7 +6,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Core/GameplayObjects/Bullet.h"
 #include "Core/GameplayObjects/BounceBlock.h"
@@ -66,6 +65,18 @@ void ABlocksPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorRotation(FRotator(0, 0, 0));
+}
+
+void ABlocksPlayer::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (EndPlayReason == EEndPlayReason::Type::LevelTransition)
+	{
+		V_LOG("LEVEL SWITCH");
+		UBlocksGameInstance* GameInstance = UBlocksGameInstance::GetMyGameInstance(this);
+		GameInstance->GameTimeSeconds = UGameplayStatics::GetTimeSeconds(this);
+	}
 }
 
 void ABlocksPlayer::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFunction& ThisTickFunction)

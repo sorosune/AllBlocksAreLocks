@@ -7,9 +7,6 @@
 #include "Engine/GameInstance.h"
 #include "BlocksGameInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ALLBLOCKSARELOCKS_API UBlocksGameInstance : public UGameInstance
 {
@@ -22,14 +19,22 @@ public:
 	// Blueprint Flags
 
 	// Blueprint Variables
+	
+	UPROPERTY(BlueprintReadOnly)
+	float GameTimeSeconds;
 
 	// Getters
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
-	static ABigFlip * GetFlipper(UObject * Context);
-	
-	
+	static ABigFlip * GetFlipper(UObject* Context);
+
+	UFUNCTION(BlueprintPure, meta=(WorldContext="Context"))
+	static UBlocksGameInstance* GetMyGameInstance(const UObject* Context);
+
 	// Setters
 
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
+	void SaveGameTimeInSeconds(const UObject* Context, float Value);
+	
 	// Wrappers
 
 	// External Virtual Functions
@@ -47,12 +52,17 @@ public:
 	// Flags
 
 	// Initialized Variables
+	UPROPERTY()
 	ABigFlip * Flipper;
 
 	// Constructor
 	UBlocksGameInstance();
 
 	// Initializers, and Actor Lifecycle Functions
+
+	virtual void Init() override;
+
+	virtual void Shutdown() override;
 
 	//======================================================================================
 	// C++ Protected

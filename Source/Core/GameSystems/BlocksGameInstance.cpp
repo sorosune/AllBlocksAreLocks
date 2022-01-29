@@ -5,16 +5,44 @@
 
 ABigFlip* UBlocksGameInstance::GetFlipper(UObject* Context)
 {
-	UWorld * world = Context->GetWorld();
-	if(!world)
-		return nullptr;
-	UBlocksGameInstance * game = Cast<UBlocksGameInstance>(world->GetGameInstance());
+	UBlocksGameInstance * game = GetMyGameInstance(Context);
 	if(!game)
 		return nullptr;
 	return game->Flipper;
 }
 
+UBlocksGameInstance* UBlocksGameInstance::GetMyGameInstance(const UObject* Context)
+{
+	UWorld * World = Context->GetWorld();
+	if (!World)
+		return nullptr;
+	UBlocksGameInstance* GameInstance = Cast<UBlocksGameInstance>(World->GetGameInstance());
+	if(!GameInstance)
+		return nullptr;
+	return GameInstance;
+}
+
+void UBlocksGameInstance::SaveGameTimeInSeconds(const UObject* Context, float Value)
+{
+	if (!GetMyGameInstance(Context))
+		return;
+	GameTimeSeconds = Value;
+}
+
 UBlocksGameInstance::UBlocksGameInstance()
 {
+}
 
+void UBlocksGameInstance::Init()
+{
+	Super::Init();
+	V_LOG("INIT");
+	GameTimeSeconds = 0.f;
+}
+
+void UBlocksGameInstance::Shutdown()
+{
+	Super::Shutdown();
+	V_LOG("SHUTDOWN");
+	GameTimeSeconds = 0.f;
 }
