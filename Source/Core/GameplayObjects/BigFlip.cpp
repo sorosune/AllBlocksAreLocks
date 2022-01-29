@@ -22,7 +22,7 @@ bool ABigFlip::Flip()
 		FQuat::Identity,	ECollisionChannel::ECC_Camera,
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
 			return false;
-	FlipInternal();
+	FlipInternal(player);
 	return true;
 }
 
@@ -43,7 +43,7 @@ bool ABigFlip::TeleportPlayer(ABaseBlock* block)
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
 			return false;
 	if(Position.Z < 0)
-		FlipInternal();
+		FlipInternal(player);
 	Position.Z = abs(Position.Z);
 	Position.Y = 0;
 	player->SetActorLocation(Position, false, nullptr, ETeleportType::ResetPhysics);
@@ -87,8 +87,9 @@ void ABigFlip::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		GI->Flipper = nullptr;
 }
 
-void ABigFlip::FlipInternal()
+void ABigFlip::FlipInternal(ABlocksPlayer * Player)
 {
+	Player->WorldNum = !Player->WorldNum;
 	AddActorLocalRotation(FRotator(0, 0, 180),false, nullptr, ETeleportType::ResetPhysics);
 	dOnFlip.Broadcast();
 }

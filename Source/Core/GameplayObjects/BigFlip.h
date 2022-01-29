@@ -73,7 +73,7 @@ protected:
 	// Internal Overrides
 
 	// Internal Regular Functions
-	void FlipInternal();
+	void FlipInternal(ABlocksPlayer * Player);
 
 	// Internal Events and Implementations 
 
