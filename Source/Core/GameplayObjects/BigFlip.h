@@ -7,6 +7,8 @@
 #include "Core/GameplayObjects/BaseBlock.h"
 #include "BigFlip.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFlip);
+
 UCLASS(Blueprintable, BlueprintType)
 class ALLBLOCKSARELOCKS_API ABigFlip : public AActor
 {
@@ -38,6 +40,8 @@ public:
 	bool TeleportPlayer(ABaseBlock * block);
 
 	// External Events
+	UPROPERTY(BlueprintAssignable)
+	FOnFlip dOnFlip;
 
 	//======================================================================================
 	// C++ Public
@@ -69,6 +73,7 @@ protected:
 	// Internal Overrides
 
 	// Internal Regular Functions
+	void FlipInternal();
 
 	// Internal Events and Implementations 
 
