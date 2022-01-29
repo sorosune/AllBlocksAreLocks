@@ -164,10 +164,7 @@ void ABlocksPlayer::ManualWorldSwap()
 	if (!ManualSwapLocks && NumWorldSwaps)
 	{
 		if (UBlocksGameInstance::GetFlipper(this)->Flip())
-		{
-			WorldNum = !WorldNum;
 			NumWorldSwaps--;
-		}
 	}
 }
 

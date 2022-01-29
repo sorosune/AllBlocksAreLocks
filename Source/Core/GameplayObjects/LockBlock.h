@@ -76,4 +76,8 @@ private:
 	// Overrides
 
 	// Regular Functions
+
+	UFUNCTION()
+	void LockPlayerWorldSwap();
+
 };
