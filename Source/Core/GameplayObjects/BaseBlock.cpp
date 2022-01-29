@@ -51,20 +51,21 @@ ABullet* ABaseBlock::SpawnBullet(FVector Direction)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		FVector Position = GetActorLocation() + 125 * Direction;
-		ABullet* NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
-		if (NewBullet)
+		FVector Position;
+		ABullet* NewBullet = nullptr;
+		if (FMath::Abs(Direction.X) >= FMath::Abs(Direction.Z))
 		{
-			if (FMath::Abs(Direction.X) >= FMath::Abs(Direction.Z))
-			{
-				NewBullet->Direction = FVector2D(FMath::Sign(Direction.X), 0);
-				NewBullet->Direction.Normalize();
-			}
-			else
-			{
-				NewBullet->Direction = FVector2D(0, FMath::Sign(Direction.Z));
-				NewBullet->Direction.Normalize();
-			}
+			Position = GetActorLocation() + 125 * GetActorForwardVector() * FMath::Sign(Direction.X);
+			NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
+			NewBullet->Direction = FVector2D(FMath::Sign(Direction.X), 0);
+			NewBullet->Direction.Normalize();
+		}
+		else
+		{
+			Position = GetActorLocation() + 125 * GetActorUpVector() * FMath::Sign(Direction.Z);
+			NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
+			NewBullet->Direction = FVector2D(0, FMath::Sign(Direction.Z));
+			NewBullet->Direction.Normalize();
 		}
 		return NewBullet;
 	}
@@ -132,6 +133,11 @@ bool ABaseBlock::PreYeet()
 void ABaseBlock::PostYeet()
 {
 	WorldNum = !WorldNum;
+	if (bIsPlayerTouching)
+	{
+		ABlocksPlayer* Player = Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		Player->GetCharacterMovement()->SetBase(nullptr);
+	}
 	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z),
 		false, nullptr, ETeleportType::ResetPhysics);
 	for (int i = 0; i < LinkedBlocks.Num(); i++)
