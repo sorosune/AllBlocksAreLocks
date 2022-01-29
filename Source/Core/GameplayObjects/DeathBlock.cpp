@@ -13,5 +13,5 @@ ADeathBlock::ADeathBlock()
 void ADeathBlock::OnPlayerOverlap(ABlocksPlayer* Player, UPrimitiveComponent* OverlappedMesh)
 {
 	if (Player)
-		UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this)));
+		Player->Die();
 }

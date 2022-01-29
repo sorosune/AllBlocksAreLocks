@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "BlocksPlayer.generated.h"
 
 class ABaseBlock;
@@ -47,6 +48,9 @@ public:
 	// External Overrides
 
 	// External Regular Functions
+
+	UFUNCTION(BlueprintCallable)
+	void Die() { UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this))); };
 
 	UFUNCTION(BlueprintCallable)
 	void EnableWorldSwap();
