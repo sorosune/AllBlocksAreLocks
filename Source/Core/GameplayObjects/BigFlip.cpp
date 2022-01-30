@@ -18,8 +18,8 @@ bool ABigFlip::Flip()
 	FVector Position = player->GetActorLocation();
 	Position = FVector(Position.X, Position.Y, -Position.Z);
 	FVector Forward;
-	if (GetWorld()->SweepSingleByChannel(Hit,Position,Position,
-		FQuat::Identity,	ECollisionChannel::ECC_Camera,
+	if (GetWorld()->SweepSingleByObjectType(Hit,Position,Position,
+		FQuat::Identity,	ECollisionChannel::ECC_WorldDynamic,
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
 			return false;
 	FlipInternal(player);
@@ -38,8 +38,8 @@ bool ABigFlip::TeleportPlayer(ABaseBlock* block)
 	else
 		Position.Z += 150;
 	FVector Forward;
-	if (GetWorld()->SweepSingleByChannel(Hit,Position,Position,
-		FQuat::Identity,	ECollisionChannel::ECC_Camera,
+	if (GetWorld()->SweepSingleByObjectType(Hit,Position,Position,
+		FQuat::Identity,	ECollisionChannel::ECC_WorldDynamic,
 		FCollisionShape::MakeBox(FVector(45, 40, 90))))
 			return false;
 	if(Position.Z < 0)

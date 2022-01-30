@@ -93,7 +93,7 @@ void ABlocksPlayer::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFuncti
 				pos.Z = 0.01;
 				FVector newVel = GetMovementComponent()->Velocity;
 				SetActorLocation(pos,false,nullptr, ETeleportType::TeleportPhysics);
-				newVel.Z *= -.90;
+				newVel.Z = FMath::Max(450.0 , newVel.Z * -1.0);
 				GetMovementComponent()->Velocity = newVel;
 			}
 		}

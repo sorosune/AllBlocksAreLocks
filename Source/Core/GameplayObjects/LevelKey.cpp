@@ -5,6 +5,8 @@
 #include <Core/Actors/BlocksPlayer.h>
 #include <Core/HelperFiles/DefinedDebugHelpers.h>
 
+#include "Core/GameSystems/BlocksGameInstance.h"
+
 // Sets default values
 ALevelKey::ALevelKey()
 {
@@ -16,6 +18,12 @@ void ALevelKey::BeginPlay()
 {
 	Super::BeginPlay();
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ALevelKey::OnOverlapBegin);
+	ABigFlip * flipper = UBlocksGameInstance::GetFlipper(this);
+	if(flipper)
+	{
+		FAttachmentTransformRules rules(EAttachmentRule::KeepWorld, true);
+		this->AttachToActor(flipper, rules);
+	}
 }
 
 void ALevelKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

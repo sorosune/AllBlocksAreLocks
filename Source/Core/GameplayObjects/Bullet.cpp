@@ -3,6 +3,8 @@
 
 #include "Bullet.h"
 #include "BaseBlock.h"
+#include "BigFlip.h"
+#include "Core/GameSystems/BlocksGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
@@ -27,6 +29,12 @@ void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnOverlapBegin);
+	ABigFlip * flipper = UBlocksGameInstance::GetFlipper(this);
+	if(flipper)
+	{
+		FAttachmentTransformRules rules(EAttachmentRule::KeepWorld, true);
+		this->AttachToActor(flipper, rules);
+	}
 }
 
 // Called every frame
