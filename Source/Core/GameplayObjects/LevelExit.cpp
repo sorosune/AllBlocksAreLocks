@@ -29,9 +29,9 @@ void ALevelExit::BeginPlay()
 void ALevelExit::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
-	if (Player && (Player->bHasKey || !bRequiresKey) && LevelToLoad.Len())
+	if (Player && (Player->bHasKey || !bRequiresKey))
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelToLoad));
+		UBlocksGameInstance::LoadNextLevel(this);
 	}
 }
 

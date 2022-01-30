@@ -22,6 +22,17 @@ UBlocksGameInstance* UBlocksGameInstance::GetMyGameInstance(const UObject* Conte
 	return GameInstance;
 }
 
+bool UBlocksGameInstance::LoadNextLevel(const UObject* Context)
+{
+	UWorld * World = Context->GetWorld();
+	if (!World)
+		return false;
+	UBlocksGameInstance* GameInstance = Cast<UBlocksGameInstance>(World->GetGameInstance());
+	if(GameInstance)
+		return GameInstance->LoadLevelInternal();
+	return false;
+}
+
 void UBlocksGameInstance::SaveGameTimeInSeconds(const UObject* Context, float Value)
 {
 	if (!GetMyGameInstance(Context))
@@ -45,4 +56,12 @@ void UBlocksGameInstance::Shutdown()
 	Super::Shutdown();
 	V_LOG("SHUTDOWN");
 	GameTimeSeconds = 0.f;
+}
+
+bool UBlocksGameInstance::LoadLevelInternal()
+{
+	if(!(LevelNum<LevelNames.Num() && LevelNames[LevelNum].Len()))
+		return false;
+	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelNames[LevelNum++]));
+	return true;
 }

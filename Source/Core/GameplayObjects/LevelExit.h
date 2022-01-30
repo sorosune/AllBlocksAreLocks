@@ -20,9 +20,6 @@ public:
 	// Blueprint Variables
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString LevelToLoad;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bRequiresKey = false;
 
 	// Getters

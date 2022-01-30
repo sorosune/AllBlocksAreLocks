@@ -23,12 +23,18 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	float GameTimeSeconds;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<FString> LevelNames;
+
 	// Getters
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
 	static ABigFlip * GetFlipper(UObject* Context);
 
 	UFUNCTION(BlueprintPure, meta=(WorldContext="Context"))
 	static UBlocksGameInstance* GetMyGameInstance(const UObject* Context);
+	
+	UFUNCTION(BlueprintPure, meta=(WorldContext="Context"))
+	static bool LoadNextLevel(const UObject* Context);
 
 	// Setters
 
@@ -75,6 +81,7 @@ protected:
 	// Internal Overrides
 
 	// Internal Regular Functions
+	bool LoadLevelInternal();
 
 	// Internal Events and Implementations 
 
@@ -83,6 +90,7 @@ protected:
 private:
 
 	// Internal Variables
+	int LevelNum = 0;
 
 	// Overrides
 
