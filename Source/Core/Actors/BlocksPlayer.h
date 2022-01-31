@@ -121,15 +121,13 @@ protected:
 	// Internal Regular Functions
 
 	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for forwards/backward input */
-	void MoveBackward(float Value);
+	void HorizontalMove(float Value);
 
 	void FireBullet();
 
-	template<int T>
-	void ChangeAimDirection();
+	void VerticalLook(float value);
+
+	void DiagonalLook(float value);
 
 	void ManualWorldSwap();
 
@@ -141,9 +139,10 @@ private:
 
 	// Internal Variables
 
-	FVector2D AimDirection = FVector2D(1, 0);
+	FVector AimInputs = FVector(1, 0, 0);
 
 	// Overrides
 
 	// Regular Functions
+	FVector2D FindDirection();
 };

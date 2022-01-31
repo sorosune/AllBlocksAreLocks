@@ -57,6 +57,8 @@ ABullet* ABaseBlock::SpawnBullet(FVector Direction)
 		{
 			Position = GetActorLocation() + 125 * GetActorForwardVector() * FMath::Sign(Direction.X);
 			NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
+			if(!NewBullet)
+				return nullptr;
 			NewBullet->Direction = FVector2D(FMath::Sign(Direction.X), 0);
 			NewBullet->Direction.Normalize();
 		}
@@ -64,6 +66,8 @@ ABullet* ABaseBlock::SpawnBullet(FVector Direction)
 		{
 			Position = GetActorLocation() + 125 * GetActorUpVector() * FMath::Sign(Direction.Z);
 			NewBullet = World->SpawnActor<ABullet>(Position, FRotator(1, 0, 0));
+			if(!NewBullet)
+				return nullptr;
 			NewBullet->Direction = FVector2D(0, FMath::Sign(Direction.Z));
 			NewBullet->Direction.Normalize();
 		}

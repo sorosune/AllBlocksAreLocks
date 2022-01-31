@@ -46,19 +46,13 @@ void ABlocksPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	// Bullet Actions
-	PlayerInputComponent->BindAction("FireBullet", IE_Pressed, this, &ABlocksPlayer::FireBullet);
-	PlayerInputComponent->BindAction("AimUp", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<0>);
-	PlayerInputComponent->BindAction("AimDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<1>);
-	PlayerInputComponent->BindAction("AimDiagonalUp", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<2>);
-	PlayerInputComponent->BindAction("AimDiagonalDown", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<3>);
-	PlayerInputComponent->BindAction("AimLeft", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<4>);
-	PlayerInputComponent->BindAction("AimRight", IE_Pressed, this, &ABlocksPlayer::ChangeAimDirection<5>);
 	PlayerInputComponent->BindAction("DaBigFlip", IE_Pressed, this, &ABlocksPlayer::ManualWorldSwap);
+	PlayerInputComponent->BindAction("FireBullet", IE_Pressed, this, &ABlocksPlayer::FireBullet);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &ABlocksPlayer::MoveForward);
-	PlayerInputComponent->BindAxis("MoveBackward", this, &ABlocksPlayer::MoveBackward);
+	
+	PlayerInputComponent->BindAxis("HorizontalMove", this, &ABlocksPlayer::HorizontalMove);
+	PlayerInputComponent->BindAxis("VerticalLook", this, &ABlocksPlayer::VerticalLook);
+	PlayerInputComponent->BindAxis("DiagonalLook", this, &ABlocksPlayer::DiagonalLook);
 }
 
 void ABlocksPlayer::BeginPlay()
@@ -86,81 +80,52 @@ void ABlocksPlayer::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFuncti
 				pos.Z = 0.01;
 				FVector newVel = GetMovementComponent()->Velocity;
 				SetActorLocation(pos,false,nullptr, ETeleportType::TeleportPhysics);
-				newVel.Z = FMath::Max(450.0 , newVel.Z * -1.0);
+				newVel.Z = FMath::Max(800.0 , newVel.Z * -1.0);
 				GetMovementComponent()->Velocity = newVel;
 			}
 		}
 	}
 }
 
-void ABlocksPlayer::MoveForward(float Value)
+void ABlocksPlayer::HorizontalMove(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
-		const FRotator YawRotation(0, 0, 0);
-		FVector Location = GetActorLocation();
-		SetActorLocation(FVector(Location.X, 0, Location.Z));
+		if(Value > 0)
+			AimInputs.X = 1;
+		else
+			AimInputs.X = -1;
 		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
-}
-
-void ABlocksPlayer::MoveBackward(float Value)
-{
-	if ((Controller != nullptr) && (Value != 0.0f))
-	{
-		const FRotator YawRotation(0, 180, 0);
-		FVector Location = GetActorLocation();
-		SetActorLocation(FVector(Location.X, 0, Location.Z));
-		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector Direction = FVector(1,0,0);
 		AddMovementInput(Direction, Value);
 	}
 }
 
 void ABlocksPlayer::FireBullet()
 {
-	FVector AimDirection3D = FVector(AimDirection.X, 0, AimDirection.Y);
+	FVector2D Direction = FindDirection();
+	FVector AimDirection3D = FVector(Direction.X, 0, Direction.Y);
 	FVector Location = GetActorLocation() + (110 * AimDirection3D);
 	UWorld* World = GetWorld();
 	if (World)
 	{
 		ABullet* Bullet = World->SpawnActor<ABullet>(Location, FRotator(0, 0, 0));
 		if(Bullet)
-			Bullet->Direction = AimDirection;
+			Bullet->Direction = Direction;
 	}
 }
 
-template<int T>
-void ABlocksPlayer::ChangeAimDirection()
+void ABlocksPlayer::VerticalLook(float value)
 {
-	FVector NewDirection;
-	switch (T)
-	{
-	case 0: // Up
-		AimDirection = FVector2D(0, 1);
-		break;
-	case 1: // Down
-		AimDirection = FVector2D(0, -1);
-		break;
-	case 2: // Diagonal Up
-		NewDirection = FVector(0, 0, 1) + GetActorForwardVector();
-		AimDirection = FVector2D(NewDirection.X, NewDirection.Z);
-		AimDirection.Normalize();
-		break;
-	case 3: // Diagonal Down
-		NewDirection = FVector(0, 0, -1) + GetActorForwardVector();
-		AimDirection = FVector2D(NewDirection.X, NewDirection.Z);
-		AimDirection.Normalize();
-		break;
-	case 4: // Left
-		AimDirection = FVector2D(-1, 0);
-		break;
-	case 5: // Right
-		AimDirection = FVector2D(1, 0);
-		break;
-	}
+	AimInputs.Y = FMath::Sign(value);
+}
+
+void ABlocksPlayer::DiagonalLook(float value)
+{
+	if(value)
+		AimInputs.Z = 1;
+	else
+		AimInputs.Z = 0;
 }
 
 void ABlocksPlayer::ManualWorldSwap()
@@ -170,6 +135,25 @@ void ABlocksPlayer::ManualWorldSwap()
 		if (UBlocksGameInstance::GetFlipper(this)->Flip())
 			NumWorldSwaps--;
 	}
+}
+
+FVector2D ABlocksPlayer::FindDirection()
+{
+	FVector2D ret = FVector2D(0, 0);
+	if(AimInputs.Z)
+	{
+		ret.X = AimInputs.X;
+		if(AimInputs.Y)
+			ret.Y = AimInputs.Y;
+		else
+			ret.Y = 1;
+	}
+	else
+		if(AimInputs.Y)
+			ret.Y = AimInputs.Y;
+		else
+			ret.X = AimInputs.X;
+	return ret;
 }
 
 void ABlocksPlayer::EnableWorldSwap()
