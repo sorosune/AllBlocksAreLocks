@@ -19,9 +19,6 @@ public:
 	// Blueprint Flags
 
 	// Blueprint Variables
-	
-	UPROPERTY(BlueprintReadOnly)
-	float GameTimeSeconds;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FString> LevelNames;
@@ -33,14 +30,14 @@ public:
 	UFUNCTION(BlueprintPure, meta=(WorldContext="Context"))
 	static UBlocksGameInstance* GetMyGameInstance(const UObject* Context);
 	
-	UFUNCTION(BlueprintPure, meta=(WorldContext="Context"))
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
 	static bool LoadNextLevel(const UObject* Context);
 
+	UFUNCTION(BlueprintPure,meta=(WorldContext="Context"))
+	static class AGameTimer* GetGameTimer(UObject* Context);
+	
 	// Setters
 
-	UFUNCTION(BlueprintCallable, meta=(WorldContext="Context"))
-	void SaveGameTimeInSeconds(const UObject* Context, float Value);
-	
 	// Wrappers
 
 	// External Virtual Functions
@@ -60,6 +57,12 @@ public:
 	// Initialized Variables
 	UPROPERTY()
 	ABigFlip * Flipper;
+
+	UPROPERTY()
+	AGameTimer* GameTimer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float GameTimeInSeconds;
 
 	// Constructor
 	UBlocksGameInstance();

@@ -3,6 +3,8 @@
 
 #include "BlocksGameInstance.h"
 
+#include "GameTimer.h"
+
 ABigFlip* UBlocksGameInstance::GetFlipper(UObject* Context)
 {
 	UBlocksGameInstance * game = GetMyGameInstance(Context);
@@ -33,11 +35,12 @@ bool UBlocksGameInstance::LoadNextLevel(const UObject* Context)
 	return false;
 }
 
-void UBlocksGameInstance::SaveGameTimeInSeconds(const UObject* Context, float Value)
+AGameTimer* UBlocksGameInstance::GetGameTimer(UObject* Context)
 {
-	if (!GetMyGameInstance(Context))
-		return;
-	GameTimeSeconds = Value;
+	UBlocksGameInstance* GI = GetMyGameInstance(Context);
+	if (!GI)
+		return nullptr;
+	return GI->GameTimer;
 }
 
 UBlocksGameInstance::UBlocksGameInstance()
@@ -47,21 +50,22 @@ UBlocksGameInstance::UBlocksGameInstance()
 void UBlocksGameInstance::Init()
 {
 	Super::Init();
-	V_LOG("INIT");
-	GameTimeSeconds = 0.f;
+
+	GameTimeInSeconds = 0.f;
 }
 
 void UBlocksGameInstance::Shutdown()
 {
 	Super::Shutdown();
-	V_LOG("SHUTDOWN");
-	GameTimeSeconds = 0.f;
+
+	GameTimeInSeconds = 0.f;
 }
 
 bool UBlocksGameInstance::LoadLevelInternal()
 {
 	if(!(LevelNum<LevelNames.Num() && LevelNames[LevelNum].Len()))
 		return false;
+	GameTimer->SaveTimer();
 	UGameplayStatics::OpenLevel(GetWorld(), FName(*LevelNames[LevelNum++]));
 	return true;
 }

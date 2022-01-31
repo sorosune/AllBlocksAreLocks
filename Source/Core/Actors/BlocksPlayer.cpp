@@ -70,13 +70,6 @@ void ABlocksPlayer::BeginPlay()
 void ABlocksPlayer::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-
-	if (EndPlayReason == EEndPlayReason::Type::LevelTransition)
-	{
-		V_LOG("LEVEL SWITCH");
-		UBlocksGameInstance* GameInstance = UBlocksGameInstance::GetMyGameInstance(this);
-		GameInstance->GameTimeSeconds = UGameplayStatics::GetTimeSeconds(this);
-	}
 }
 
 void ABlocksPlayer::TickActor(float DeltaTime, ELevelTick Tick, FActorTickFunction& ThisTickFunction)
