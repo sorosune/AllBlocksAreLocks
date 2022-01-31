@@ -34,6 +34,7 @@ void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 		if (!Player->dOnPlayerFalling.IsAlreadyBound(this, &ABaseBlock::ResetPlayerTouching))
 			Player->dOnPlayerFalling.AddDynamic(this, &ABaseBlock::ResetPlayerTouching);
 	}
+	RootComponent->SetAbsolute(false,true,false);
 }
 
 void ABaseBlock::ResetPlayerTouching()

@@ -29,6 +29,9 @@ void AWorldSwapPickup::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 {
 	ABlocksPlayer* Player = Cast<ABlocksPlayer>(OtherActor);
 	if (Player)
+	{
 		Player->NumWorldSwaps += WorldSwapsToAdd;
+		Destroy();
+	}
 }
 
