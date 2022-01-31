@@ -11,6 +11,7 @@
 #include "Core/GameplayObjects/BounceBlock.h"
 #include "Core/HelperFiles/DefinedDebugHelpers.h"
 #include "Core/GameSystems/BlocksGameInstance.h"
+#include "Core/GameSystems/GameTimer.h"
 
 ABlocksPlayer::ABlocksPlayer()
 {
@@ -154,6 +155,15 @@ FVector2D ABlocksPlayer::FindDirection()
 		else
 			ret.X = AimInputs.X;
 	return ret;
+}
+
+void ABlocksPlayer::Die()
+{
+	if (const UBlocksGameInstance* GI = UBlocksGameInstance::GetMyGameInstance(this))
+	{
+		GI->GameTimer->SaveTimer();
+		UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this)));
+	}
 }
 
 void ABlocksPlayer::EnableWorldSwap()

@@ -55,7 +55,7 @@ public:
 	// External Regular Functions
 
 	UFUNCTION(BlueprintCallable)
-	void Die() { UGameplayStatics::OpenLevel(this, FName(*UGameplayStatics::GetCurrentLevelName(this))); };
+	void Die();
 
 	UFUNCTION(BlueprintCallable)
 	void EnableWorldSwap();

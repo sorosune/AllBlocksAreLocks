@@ -19,9 +19,6 @@ public:
 
 	// Blueprint Variables
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(MakeEditWidget))
-	// FVector TargetLocation;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* Start;
 
