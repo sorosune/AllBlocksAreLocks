@@ -89,6 +89,7 @@ void ABigFlip::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ABigFlip::FlipInternal(ABlocksPlayer * Player)
 {
+	Player->GetCharacterMovement()->SetBase(nullptr);
 	Player->WorldNum = !Player->WorldNum;
 	AddActorLocalRotation(FRotator(0, 0, 180),false, nullptr, ETeleportType::ResetPhysics);
 	dOnFlip.Broadcast();
