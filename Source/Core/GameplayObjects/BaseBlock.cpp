@@ -21,6 +21,8 @@ void ABaseBlock::BeginPlay()
 	Super::BeginPlay();
 	Mesh->OnComponentHit.AddDynamic(this, &ABaseBlock::OnHit);
 	WorldNum = GetActorLocation().Z < 0;
+	if(LinkBlocks)
+		GetComponents(LinkedBlocks);
 }
 
 void ABaseBlock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

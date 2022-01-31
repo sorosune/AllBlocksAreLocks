@@ -5,13 +5,12 @@
 
 ALinkedBlock::ALinkedBlock()
 {
-
+	LinkBlocks = true;
 }
 
 void ALinkedBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	GetComponents(LinkedBlocks);
 }
 
 void ALinkedBlock::OnBulletHit(ABullet* Bullet)

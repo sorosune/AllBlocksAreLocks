@@ -24,6 +24,8 @@ public:
 	// Blueprint Flags
 
 	// Blueprint Variables
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool LinkBlocks;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
