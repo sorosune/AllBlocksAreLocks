@@ -140,11 +140,8 @@ bool ABaseBlock::PreYeet()
 void ABaseBlock::PostYeet()
 {
 	WorldNum = !WorldNum;
-	if (bIsPlayerTouching)
-	{
-		ABlocksPlayer* Player = Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		Player->GetCharacterMovement()->SetBase(nullptr);
-	}
+	ABlocksPlayer* Player = Cast<ABlocksPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->GetCharacterMovement()->SetBase(nullptr);
 	SetActorLocation(FVector(GetActorLocation().X, -GetActorLocation().Y, -GetActorLocation().Z),
 		false, nullptr, ETeleportType::ResetPhysics);
 	for (int i = 0; i < LinkedBlocks.Num(); i++)
